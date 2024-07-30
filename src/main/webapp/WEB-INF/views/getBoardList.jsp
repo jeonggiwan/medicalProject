@@ -23,6 +23,7 @@
 					</select>
 					<input name="searchKeyword" type="text" />
 					<input type="submit" value="검색" />
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 				</td>
 			</tr>
 		</table>
