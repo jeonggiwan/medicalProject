@@ -25,13 +25,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+        
             .authorizeRequests()
                 .antMatchers("/", "/login", "/public/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true)  // 여기를 수정했습니다.
+                .defaultSuccessUrl("/", true) 
                 .failureUrl("/login?error=true")
                 .permitAll()
                 .and()
@@ -54,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         }).passwordEncoder(passwordEncoder());
     }
 
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
