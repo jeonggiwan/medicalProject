@@ -1,38 +1,43 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>새글 등록</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글 등록</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link href="\CSS\insertBoardPage.css" rel="stylesheet" type="text/css">
 </head>
-<body>
-<c:out value="${_csrf.token}"/>
-	<h1>글 등록</h1>
-	<hr>
-	<form action="insertBoard" method="post">
-		<table border="1">
-			<tr>
-				<td>제목</td>
-				<td><input type="text" name="title"></td>
-			</tr>
-			<tr>
-				<td>작성자</td>
-				<td><sec:authentication property="principal.username"
-						var="userId" /> <input type="text" name="writer"
-					value="${userId}" readonly></td>
-			</tr>
-			<tr>
-				<td>내용</td>
-				<td><textarea name="content" cols="40" rows="10"></textarea></td>
-			</tr>
-		</table>
-		<input type="hidden" name="${_csrf.parameterName}"
-			value="${_csrf.token}" /> <input type="submit" value=" 새글 등록 " />
-	</form>
-	<hr>
-	<a href="getBoardList">글 목록 가기</a>
+<body class="bg-gray-100 p-6">
+    <div class="container">
+        <h1 class="title">글 등록</h1>
+        <form action="insertBoard" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title" class="form-label">제목</label>
+                <input type="text" id="title" name="title" class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="writer" class="form-label">작성자</label>
+                <input type="text" id="writer" name="writer" class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="content" class="form-label">내용</label>
+                <textarea id="content" name="content" rows="6" class="form-textarea"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="uploadFile" class="form-label">업로드</label>
+                <input type="file" id="uploadFile" name="uploadFile" class="form-input">
+                <p class="file-info">선택된 파일 없음</p>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="submit-button">새글 등록</button>
+            </div>
+        </form>
+        <div class="mt-4">
+            <a href="getBoardList" class="list-link">글 목록 가기</a>
+        </div>
+    </div>
 </body>
 </html>
