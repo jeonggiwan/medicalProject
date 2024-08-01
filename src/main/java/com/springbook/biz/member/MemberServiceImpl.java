@@ -24,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails  loadUserByUsername(String username) throws UsernameNotFoundException {
         MemberVO member = getMemberById(username);
         if (member == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
