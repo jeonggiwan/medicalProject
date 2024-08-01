@@ -9,7 +9,7 @@
     <title>PACSPLUS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="\CSS\index.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath}/CSS/index.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 text-gray-900">

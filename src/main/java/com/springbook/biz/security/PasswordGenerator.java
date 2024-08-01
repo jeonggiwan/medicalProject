@@ -1,4 +1,4 @@
-package com.springbook.biz.config;
+package com.springbook.biz.security;
 
 
 
