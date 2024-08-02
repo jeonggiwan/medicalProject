@@ -4,10 +4,9 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<!-- Alias 설정 -->
-	<typeAliases>		<typeAlias type="com.springbook.biz.VO.BoardVO"
-			alias="board"></typeAlias>
-		<typeAlias type="com.springbook.biz.VO.MemberVO"
-			alias="member"></typeAlias>
+	<typeAliases>
+		<typeAlias type="com.springbook.biz.VO.BoardVO" alias="board"></typeAlias>
+		<typeAlias type="com.springbook.biz.VO.MemberVO" alias="member"></typeAlias>
 	</typeAliases>
 
 	<!-- Sql Mapper 설정 -->
@@ -15,4 +14,15 @@
 		<mapper resource="mappings/board-mapping.xml" />
 		<mapper resource="mappings/member-mapping.xml" />
 	</mappers>
+
+	<!-- Oracle과 MySQL 모두에서 사용 가능한 설정 -->
+	<typeAliases>
+		<typeAlias type="com.springbook.biz.VO.PdataVO" alias="pdata"/>
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="mappings/pdata-mapping.xml"/>
+	</mappers>
+</configuration>
+
 </configuration>

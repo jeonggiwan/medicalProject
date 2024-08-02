@@ -1,0 +1,76 @@
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.container {
+    max-width: 56rem;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 1rem;
+    align-items: center;
+}
+.form-label {
+    font-weight: 600;
+}
+.form-input {
+    border: 1px solid #D1D5DB;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+.form-input-readonly {
+    background-color: #F3F4F6;
+}
+.form-textarea {
+    border: 1px solid #D1D5DB;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+.submit-button {
+    background-color: #3B82F6;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+.submit-button:hover {
+    background-color: #2563EB;
+}
+.button-container {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+.delete-button {
+    background-color: #EF4444;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+.delete-button:hover {
+    background-color: #DC2626;
+}
+.list-button {
+    background-color: #E5E7EB;
+    color: black;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+.list-button:hover {
+    background-color: #D1D5DB;
+}
