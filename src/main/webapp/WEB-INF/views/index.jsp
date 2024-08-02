@@ -154,21 +154,27 @@
 			</div>
 		</div>
 	</div>
-
-	<script>
-	$(document).ready(function() {
-	    $('#logoutButton').click(function() {
-	        // 로컬 스토리지에서 토큰 제거
-	        localStorage.removeItem('token');
-	        
-	        // 쿠키에서도 토큰 제거 
-	        document.cookie = "X-AUTH-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-	        
-	        // 로그인 페이지로 리다이렉트
-	        window.location.href = '/login';
-	    });
-	});
-    </script>
+<script>
+$('#logoutButton').click(function() {
+    $.ajax({
+        url: '/logout',
+        type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function(response) {
+            console.log('Logout successful');
+            document.cookie = "REFRESH_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            localStorage.removeItem('accessToken'); // 액세스 토큰 제거
+            window.location.href = '/login';
+        },
+        error: function(xhr, status, error) {
+            console.error('Logout failed:', error);
+            alert('로그아웃 중 오류가 발생했습니다.');
+        }
+    });
+});
+</script>
 </body>
 
 </html>
