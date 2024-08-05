@@ -40,14 +40,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/login", "/public/**").permitAll()
+            .antMatchers("/login","/logout","/public/**").permitAll()
             .anyRequest().authenticated()
             .and()
+            .logout().disable()  
             .exceptionHandling()
             .authenticationEntryPoint((request, response, authException) -> 
                 response.sendRedirect("/login"))
             .and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Override

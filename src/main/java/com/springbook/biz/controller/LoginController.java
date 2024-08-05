@@ -1,5 +1,12 @@
 package com.springbook.biz.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,16 +43,58 @@ public class LoginController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<String> login(@RequestParam String id, @RequestParam String password) {
+    public ResponseEntity<Map<String, String>> login(@RequestParam String id, @RequestParam String password, HttpServletResponse response) {
         try {
+            // 로그 추가
+            System.out.println("Login attempt for user: " + id);
+            
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(id, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            String token = jwtTokenProvider.createToken(id);
-            System.out.println(token);
-            return ResponseEntity.ok(token);
+            
+            String accessToken = jwtTokenProvider.createAccessToken(id);
+            String refreshToken = jwtTokenProvider.createRefreshToken(id);
+            
+ 
+            System.out.println("Access token created: " + accessToken);
+            System.out.println("Refresh token created: " + refreshToken);
+            
+            // RefreshToken을 쿠키에 저장
+            Cookie refreshTokenCookie = new Cookie("REFRESH_TOKEN", refreshToken);
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setPath("/");
+            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일
+            response.addCookie(refreshTokenCookie);
+            
+            Map<String, String> tokens = new HashMap<>();
+            tokens.put("accessToken", accessToken);
+         
+            
+            // 로그인 성공트
+            return ResponseEntity.ok(tokens);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            // 로그 추가
+            System.out.println("Login failed: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+    }
+    @PostMapping("/logout")
+    @ResponseBody
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("REFRESH_TOKEN".equals(cookie.getName())) {
+                    cookie.setValue("");
+                    cookie.setPath("/");
+                    cookie.setMaxAge(0);
+                    cookie.setHttpOnly(true);
+                    response.addCookie(cookie);
+    }
+            }
+        }
+
+        return ResponseEntity.ok("Logged out successfully");
     }
 }

@@ -1,10 +1,8 @@
 package com.springbook.biz.security;
 
 import java.util.Date;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -20,11 +17,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtTokenProvider {
-
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private long tokenValidMillisecond = 1000L * 60; // 1분 토큰 유효
+    private long accessTokenValidMillisecond = 1000L * 5 ; // 
+    private long refreshTokenValidMillisecond = 1000L * 60 * 60 * 24 * 7; // 7일
 
     private final UserDetailsService userDetailsService;
 
@@ -32,15 +29,24 @@ public class JwtTokenProvider {
         this.userDetailsService = userDetailsService;
     }
 
-    // Jwt 토큰 생성
-    public String createToken(String userPk) {
+    public String createAccessToken(String userPk) {
+        return createToken(userPk, accessTokenValidMillisecond);
+    }
+
+    public String createRefreshToken(String userPk) {
+        return createToken(userPk, refreshTokenValidMillisecond);
+    }
+
+    private String createToken(String userPk, long validMillisecond) {
         Claims claims = Jwts.claims().setSubject(userPk);
         Date now = new Date();
+        Date expiration = new Date(now.getTime() + validMillisecond);
+        System.out.println("Creating token - Now: " + now + ", Expiration: " + expiration);
         return Jwts.builder()
-                .setClaims(claims) // 데이터
-                .setIssuedAt(now) // 토큰 발행일자
-                .setExpiration(new Date(now.getTime() + tokenValidMillisecond)) // 유효시간 설정
-                .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret 값 세팅
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiration)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
@@ -55,21 +61,19 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Request의 Header에서 token 파싱 : "X-AUTH-TOKEN: jwt토큰"
-    public String resolveToken(HttpServletRequest req) {
-        String token = req.getHeader("X-AUTH-TOKEN");
-        if (token == null) {
-            Cookie[] cookies = req.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if ("X-AUTH-TOKEN".equals(cookie.getName())) {
-                        token = cookie.getValue();
-                        break;
-                    }
+    // jwt토큰
+
+    
+    public String resolveRefreshToken(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("REFRESH_TOKEN".equals(cookie.getName())) {
+                    return cookie.getValue();
                 }
             }
         }
-        return token;
+        return null;
     }
 
     // Jwt 토큰의 유효성 + 만료일자 확인
