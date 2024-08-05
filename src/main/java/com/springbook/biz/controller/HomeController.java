@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,26 +26,32 @@ public class HomeController {
 	    return "public/home";
 	}
     
-	@GetMapping("/")
+	@RequestMapping("/")
 	public String index() {
 		return "index";
 	}
 	
-	@GetMapping("insertBoardPage")
+	@RequestMapping("insertBoardPage")
 	public String insert() {
 		return "insertBoardPage";
 	}
 	
 	// 글 등록
-	@PostMapping("/insertBoard")
+	@RequestMapping(value="/insertBoard")
 	public String insertBoard(BoardVO vo) throws IOException {
 		System.out.println("글 등록 처리");
+		// 파일 업로드 처리
+		MultipartFile uploadFile = vo.getUploadFile();
+		if(!uploadFile.isEmpty()) {
+			String fileName = uploadFile.getOriginalFilename();
+			uploadFile.transferTo(new File("c:/fileUpload/" + fileName));
+		}
 		boardService.insertBoard(vo);
 		return "redirect:getBoardList";
 	}
 	
 	// 글 수정
-	@PostMapping("/updateBoard")
+	@RequestMapping("/updateBoard")
 	public String updateBoard(@ModelAttribute("board") BoardVO vo) {
 		System.out.println("글 수정 처리");
 		
@@ -55,7 +60,7 @@ public class HomeController {
 	}
 	
 	// 글 삭제
-	@PostMapping("/deleteBoard")
+	@RequestMapping("/deleteBoard")
 	public String deleteBoard(BoardVO vo) {
 		System.out.println("글 삭제 처리");
 		
@@ -64,7 +69,7 @@ public class HomeController {
 	}
 	
 	// 글 상세 조회
-	@GetMapping("/getBoard")
+	@RequestMapping("/getBoard")
 	public String getBoard(BoardVO vo, Model model) {
 		System.out.println("글 상세 조회 처리");
 		
@@ -73,7 +78,7 @@ public class HomeController {
 	}	
 	
 	// 글 목록 검색
-	@GetMapping("/getBoardList")
+	@RequestMapping("/getBoardList")
 	public String getBoardList(BoardVO vo, Model model) {
 		System.out.println("글 목록 검색 처리");
 		
