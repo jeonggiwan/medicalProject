@@ -1,7 +1,7 @@
 package com.springbook.biz.controller;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,16 +9,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.springbook.biz.VO.BoardVO;
+import com.springbook.biz.VO.StudyVO;
 import com.springbook.biz.board.impl.BoardService;
+import com.springbook.biz.study.StudyService;
 
 
 @Controller
 public class HomeController {
-	
+    @Autowired
+    private StudyService studyService;
+    
 	@Autowired
 	private BoardService boardService;
 	
@@ -27,11 +29,14 @@ public class HomeController {
 	    return "public/home";
 	}
     
-	@GetMapping("/")
-	public String index() {
-		return "index";
-	}
-	
+
+    
+    @GetMapping("/")
+    public String index(Model model) {
+        List<StudyVO> studyList = studyService.getStudyList();
+        model.addAttribute("studyList", studyList);
+        return "index";
+    }
 	@GetMapping("insertBoardPage")
 	public String insert() {
 		return "insertBoardPage";
