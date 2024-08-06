@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/login","/logout","/public/**").permitAll()
             .anyRequest().authenticated()
-            .and()
+            .and()  
             .logout().disable()  
             .exceptionHandling()
             .authenticationEntryPoint((request, response, authException) -> 

@@ -80,8 +80,16 @@ public class JwtTokenProvider {
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-            return !claims.getBody().getExpiration().before(new Date());
+            Date expiration = claims.getBody().getExpiration();
+            Date now = new Date();
+            boolean isExpired = expiration.before(now);
+            System.out.println("Token expiration: " + expiration);
+            System.out.println("Current time: " + now);
+            System.out.println("Token expired: " + isExpired);
+            
+            return !isExpired;
         } catch (Exception e) {
+            System.out.println("Token validation failed: " + e.getMessage());
             return false;
         }
     }
