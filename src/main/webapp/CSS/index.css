@@ -91,17 +91,41 @@
             background-color: #EF4444;
             color: white;
         }
-        .table {
-            width: 100%;
-            border: 1px solid #D1D5DB;
-        }
-        .table-header {
-            background-color: #E5E7EB;
-        }
-        .table-cell {
-            border: 1px solid #D1D5DB;
-            padding: 0.25rem 0.5rem;
-        }
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    table-layout: fixed; /* 테이블 레이아웃을 고정 */
+    border-collapse: collapse;
+}
+
+.table-cell {
+    padding: 10px;
+    border: 1px solid #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table-header {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+/* 각 열의 너비를 지정 */
+.table .col-checkbox { width: 50px; }
+.table .col-id { width: 100px; }
+.table .col-name { width: 120px; }
+.table .col-date { width: 100px; }
+.table .col-time { width: 100px; }
+.table .col-modality { width: 100px; }
+.table .col-desc { width: 200px; }
+.table .col-series { width: 80px; }
+.table .col-images { width: 80px; }
+.table .col-verify { width: 80px; }
         .verify-button {
             background-color: #3B82F6;
             color: white;
@@ -133,3 +157,29 @@
             justify-content: flex-end;
             gap: 0.5rem;
         }
+        
+        .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination a, .pagination span {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+    margin: 0 4px;
+}
+
+.pagination a:hover {
+    background-color: #ddd;
+}
+
+.pagination .current-page {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #4CAF50;
+}

@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springbook.biz.VO.BoardVO;
 import com.springbook.biz.VO.StudyVO;
@@ -31,12 +32,22 @@ public class HomeController {
     
 
     
-    @GetMapping("/")
-    public String index(Model model) {
-        List<StudyVO> studyList = studyService.getStudyList();
-        model.addAttribute("studyList", studyList);
-        return "index";
-    }
+	@GetMapping("/")
+	public String index(Model model, @RequestParam(defaultValue = "1") int page) {
+	    int pageSize = 6;
+	    List<StudyVO> allStudies = studyService.getStudyList();
+	    int totalStudies = allStudies.size();
+	    int totalPages = (int) Math.ceil((double) totalStudies / pageSize);
+	    
+	    int start = (page - 1) * pageSize;
+	    int end = Math.min(start + pageSize, totalStudies);
+	    List<StudyVO> pagedStudies = allStudies.subList(start, end);
+	    
+	    model.addAttribute("studyList", pagedStudies);
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("totalPages", totalPages);
+	    return "index";
+	}
 	@GetMapping("insertBoardPage")
 	public String insert() {
 		return "insertBoardPage";
