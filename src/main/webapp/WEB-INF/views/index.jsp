@@ -66,7 +66,6 @@
 								<col class="col-desc">
 								<col class="col-series">
 								<col class="col-images">
-								<col class="col-verify">
 							</colgroup>
 							<thead class="table-header">
 								<tr>
@@ -79,7 +78,6 @@
 									<th class="table-cell">검사 설명</th>
 									<th class="table-cell">시리즈 수</th>
 									<th class="table-cell">이미지 수</th>
-									<th class="table-cell">Verify</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -95,7 +93,6 @@
 										<td class="table-cell">${study.studyDesc}</td>
 										<td class="table-cell">${study.seriesCnt}</td>
 										<td class="table-cell">${study.imageCnt}</td>
-										<td class="table-cell"><button class="verify-button">Verify</button></td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -142,7 +139,6 @@
 									<col class="col-desc">
 									<col class="col-series">
 									<col class="col-images">
-									<col class="col-verify">
 								</colgroup>
 								<thead class="table-header">
 									<tr>
@@ -152,7 +148,6 @@
 										<th class="table-cell">검사 설명</th>
 										<th class="table-cell">시리즈</th>
 										<th class="table-cell">이미지</th>
-										<th class="table-cell">Verify</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -165,12 +160,17 @@
 			</div>
 		</div>
 		<div class="sidebar">
-			<h2 class="sidebar-title">진료일정</h2>
-			<div id="calendar" class="calendar"></div>
+			<h1 class="sidebar-title">일정</h1>
+			<div class="calendar-container">
+				<div id="calendar" class="calendar"></div>
+			</div>
+            <button id="saveButton" class="save-button">저장</button>
+            <div class="memo-container">
+                <textarea id="memoTextarea" class="memo-textarea" placeholder="메모를 입력하세요..."></textarea>
+            </div>
 		</div>
-	</div>
-
-	<script>
+</div>
+		<script>
 		$(document)
 				.ready(
 						function() {
@@ -224,12 +224,48 @@
 														});
 											});
 
-							// 달력 초기화
-							flatpickr("#calendar", {
-								inline : true,
-								mode : "multiple",
-								dateFormat : "Y-m-d"
-							});
+							 // 달력 초기화
+				            const calendarEl = document.getElementById('calendar');
+				            const fp = flatpickr(calendarEl, {
+				                inline: true,
+				                mode: "multiple",
+				                dateFormat: "Y-m-d",
+				                onChange: function(selectedDates, dateStr, instance) {
+				                    loadMemo(dateStr);
+				                }
+				            });
+
+				            const memoTextarea = document.getElementById('memoTextarea');
+				            const saveButton = document.getElementById('saveButton');
+
+				            saveButton.addEventListener('click', function() {
+				                const selectedDates = fp.selectedDates;
+				                const memo = memoTextarea.value;
+				                if (selectedDates.length > 0) {
+				                    const dateStr = formatDate(selectedDates[selectedDates.length - 1]);
+				                    saveMemo(dateStr, memo);
+				                } else {
+				                    alert('날짜를 선택해주세요.');
+				                }
+				            });
+
+				            function loadMemo(dateStr) {
+				                const memo = localStorage.getItem(dateStr) || '';
+				                memoTextarea.value = memo;
+				            }
+
+				            function saveMemo(dateStr, memo) {
+				                localStorage.setItem(dateStr, memo);
+				                alert('메모가 저장되었습니다.');
+				            }
+
+				            function formatDate(date) {
+				                const year = date.getFullYear();
+				                const month = String(date.getMonth() + 1).padStart(2, '0');
+				                const day = String(date.getDate()).padStart(2, '0');
+				                return `${year}-${month}-${day}`;
+				            }
+
 						});
 
 		function updateHistoryTable(historyData) {
@@ -244,8 +280,6 @@
 				row.append($('<td>').text(item.studyDesc));
 				row.append($('<td>').text(item.seriesCnt));
 				row.append($('<td>').text(item.imageCnt));
-				row.append($('<td>').html(
-						'<button class="verify-button">Verify</button>'));
 				tbody.append(row);
 			});
 		}
