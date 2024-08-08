@@ -13,33 +13,69 @@ body {
 
 .main-content {
     flex: 1;
-    padding: 0.25rem;
+    padding: 1rem;
     box-sizing: border-box;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar {
-    width: 350px; /* 증가된 너비 */
+    width: 300px;
     background-color: white;
     border-left: 1px solid #e5e7eb;
     padding: 1rem;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    height: 100vh;
     overflow-y: auto;
 }
 
 .sidebar-title {
     font-size: 1.2rem;
     font-weight: bold;
-    margin-bottom: 1rem;
     color: #1F2937;
+    margin-bottom: 1rem;
+}
+
+.calendar-container {
+    padding-top: 0;
+    flex-shrink: 0;
+    margin-bottom: 1rem;
 }
 
 .calendar {
     border: 1px solid #e5e7eb;
     border-radius: 0.25rem;
+    padding: 0;
+}
+
+.memo-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.memo-textarea {
+    flex-grow: 1;
+    resize: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
     padding: 0.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.save-button {
+    background-color: #3B82F6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    align-self: flex-end;
     margin-bottom: 1rem;
 }
 
@@ -47,7 +83,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.25rem 0.5rem;
+    padding: 1rem;
     background-color: white;
     border-bottom: 1px solid #e5e7eb;
 }
@@ -58,73 +94,76 @@ body {
 }
 
 .header-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    margin-right: 0.25rem;
+    margin-right: 1rem;
 }
 
 .notification-icon {
-    font-size: 1rem;
+    font-size: 1.2rem;
     cursor: pointer;
     color: #4B5563;
 }
 
 .header-right {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .header-link {
     color: #3B82F6;
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: 1rem;
 }
 
 .content {
     background-color: white;
-    padding: 0.25rem;
-    border-radius: 0.25rem;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    margin-top: 0.25rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .search-section {
-    margin-bottom: 0.25rem;
+    margin-bottom: 1rem;
 }
 
 .search-title {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.5rem;
 }
 
 .search-inputs {
     display: flex;
-    gap: 0.25rem;
-    margin-bottom: 0.25rem;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .search-input {
     border: 1px solid #D1D5DB;
     border-radius: 0.25rem;
-    padding: 0.15rem 0.25rem;
-    font-size: 0.8rem;
+    padding: 0.5rem;
+    font-size: 1rem;
 }
 
 .search-buttons {
     display: flex;
-    gap: 0.15rem;
-    margin-bottom: 0.25rem;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
 }
 
 .search-button {
-    padding: 0.15rem 0.25rem;
+    padding: 0.5rem 1rem;
     background-color: #E5E7EB;
     border: none;
     border-radius: 0.25rem;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     cursor: pointer;
 }
 
@@ -136,21 +175,18 @@ body {
 .table-container {
     width: 100%;
     overflow-x: auto;
+    flex-grow: 1;
 }
 
 .table {
     width: 100%;
-    table-layout: fixed;
     border-collapse: collapse;
 }
 
 .table-cell {
-    padding: 0.25rem;
+    padding: 0.75rem;
     border: 1px solid #ddd;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
 }
 
 .table-header {
@@ -161,9 +197,9 @@ body {
 .verify-button {
     background-color: #3B82F6;
     color: white;
-    padding: 0.1rem 0.2rem;
-    border-radius: 0.15rem;
-    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
     border: none;
     cursor: pointer;
 }
@@ -171,40 +207,48 @@ body {
 .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 0.25rem;
+    margin-top: 1rem;
 }
 
 .pagination a, .pagination span {
     color: black;
-    padding: 0.15rem 0.3rem;
+    padding: 0.5rem 0.75rem;
     text-decoration: none;
     transition: background-color .3s;
     border: 1px solid #ddd;
-    margin: 0 1px;
-    font-size: 0.75rem;
+    margin: 0 2px;
+    font-size: 0.9rem;
 }
 
-.history-section {
-    margin-top: 0.5rem;
+.grid-container {
+    margin-top: 1rem;
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-.history-table {
-    width: 100%;
+.grid-container > div {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.history-table .table-cell {
-    font-size: 0.75rem;
+.grid-container .table-container {
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
-/* flatpickr 달력 스타일 조정 */
+/* flatpickr 관련 스타일 */
 .flatpickr-calendar {
     width: 100% !important;
     max-width: none !important;
     box-sizing: border-box;
-    margin-top: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
     position: relative !important;
-    top: 0 !important;
-    left: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .flatpickr-days {
@@ -220,11 +264,4 @@ body {
 .flatpickr-day {
     max-width: none !important;
     flex-basis: 14.2857% !important;
-}
-
-/* 과거 검사 이력 섹션 높이 증가 */
-.grid-container {
-    margin-top: 1rem;
-    height: 300px; /* 증가된 높이 */
-    overflow-y: auto;
 }
