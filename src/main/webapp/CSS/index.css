@@ -1,96 +1,138 @@
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-        .container {
-            display: flex;
-            height: 100vh;
-        }
-        .sidebar {
-            background-color: #1F2937;
-            color: white;
-            width: 4rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-        }
-        .sidebar-logo {
-            margin-bottom: 1rem;
-        }
-        .sidebar-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .sidebar-button {
-            width: 2.5rem;
-            height: 2.5rem;
-            background-color: #EF4444;
-            border-radius: 9999px;
-        }
-        .main-content {
-            flex: 1;
-            padding: 1rem;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        .header-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-        .header-button {
-            width: 2rem;
-            height: 2rem;
-            background-color: #D1D5DB;
-            border-radius: 9999px;
-        }
-        .content {
-            background-color: white;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-        .search-section {
-            margin-bottom: 1rem;
-        }
-        .search-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .search-inputs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        .search-input {
-            border: 1px solid #D1D5DB;
-            border-radius: 0.25rem;
-            padding: 0.25rem 0.5rem;
-        }
-        .search-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .search-button {
-            padding: 0.5rem 1rem;
-            background-color: #E5E7EB;
-            border-radius: 0.25rem;
-        }
-        .search-button-red {
-            background-color: #EF4444;
-            color: white;
-        }
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f3f4f6;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main-content {
+    flex: 1;
+    padding: 0.25rem;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.sidebar {
+    width: 350px; /* 증가된 너비 */
+    background-color: white;
+    border-left: 1px solid #e5e7eb;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #1F2937;
+}
+
+.calendar {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-right: 0.25rem;
+}
+
+.notification-icon {
+    font-size: 1rem;
+    cursor: pointer;
+    color: #4B5563;
+}
+
+.header-right {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.header-link {
+    color: #3B82F6;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.content {
+    background-color: white;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    margin-top: 0.25rem;
+}
+
+.search-section {
+    margin-bottom: 0.25rem;
+}
+
+.search-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+}
+
+.search-inputs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.search-input {
+    border: 1px solid #D1D5DB;
+    border-radius: 0.25rem;
+    padding: 0.15rem 0.25rem;
+    font-size: 0.8rem;
+}
+
+.search-buttons {
+    display: flex;
+    gap: 0.15rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.search-button {
+    padding: 0.15rem 0.25rem;
+    background-color: #E5E7EB;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.search-button-red {
+    background-color: #EF4444;
+    color: white;
+}
+
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -98,16 +140,17 @@
 
 .table {
     width: 100%;
-    table-layout: fixed; /* 테이블 레이아웃을 고정 */
+    table-layout: fixed;
     border-collapse: collapse;
 }
 
 .table-cell {
-    padding: 10px;
+    padding: 0.25rem;
     border: 1px solid #ddd;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 0.75rem;
 }
 
 .table-header {
@@ -115,71 +158,73 @@
     font-weight: bold;
 }
 
-/* 각 열의 너비를 지정 */
-.table .col-checkbox { width: 50px; }
-.table .col-id { width: 100px; }
-.table .col-name { width: 120px; }
-.table .col-date { width: 100px; }
-.table .col-time { width: 100px; }
-.table .col-modality { width: 100px; }
-.table .col-desc { width: 200px; }
-.table .col-series { width: 80px; }
-.table .col-images { width: 80px; }
-.table .col-verify { width: 80px; }
-        .verify-button {
-            background-color: #3B82F6;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-        .textarea {
-            border: 1px solid #D1D5DB;
-            border-radius: 0.25rem;
-            padding: 0.25rem 0.5rem;
-            margin-bottom: 0.5rem;
-            width: 100%;
-            height: 6rem;
-        }
-        .select {
-            border: 1px solid #D1D5DB;
-            border-radius: 0.25rem;
-            padding: 0.25rem 0.5rem;
-            margin-bottom: 0.5rem;
-            width: 100%;
-        }
-        .button-container {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-        
-        .pagination {
+.verify-button {
+    background-color: #3B82F6;
+    color: white;
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.15rem;
+    font-size: 0.7rem;
+    border: none;
+    cursor: pointer;
+}
+
+.pagination {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 0.25rem;
 }
 
 .pagination a, .pagination span {
     color: black;
-    float: left;
-    padding: 8px 16px;
+    padding: 0.15rem 0.3rem;
     text-decoration: none;
     transition: background-color .3s;
     border: 1px solid #ddd;
-    margin: 0 4px;
+    margin: 0 1px;
+    font-size: 0.75rem;
 }
 
-.pagination a:hover {
-    background-color: #ddd;
+.history-section {
+    margin-top: 0.5rem;
 }
 
-.pagination .current-page {
-    background-color: #4CAF50;
-    color: white;
-    border: 1px solid #4CAF50;
+.history-table {
+    width: 100%;
+}
+
+.history-table .table-cell {
+    font-size: 0.75rem;
+}
+
+/* flatpickr 달력 스타일 조정 */
+.flatpickr-calendar {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+    margin-top: 0 !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+}
+
+.flatpickr-days {
+    width: 100% !important;
+}
+
+.dayContainer {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+}
+
+.flatpickr-day {
+    max-width: none !important;
+    flex-basis: 14.2857% !important;
+}
+
+/* 과거 검사 이력 섹션 높이 증가 */
+.grid-container {
+    margin-top: 1rem;
+    height: 300px; /* 증가된 높이 */
+    overflow-y: auto;
 }

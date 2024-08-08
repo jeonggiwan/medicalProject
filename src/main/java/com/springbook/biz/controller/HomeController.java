@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springbook.biz.VO.BoardVO;
 import com.springbook.biz.VO.StudyVO;
@@ -48,6 +49,14 @@ public class HomeController {
 	    model.addAttribute("totalPages", totalPages);
 	    return "index";
 	}
+	
+	@GetMapping("/getPatientHistory")
+	@ResponseBody
+	public List<StudyVO> getPatientHistory(@RequestParam String pid) {
+	    return studyService.getPatientHistory(pid);
+	}
+	
+	
 	@GetMapping("insertBoardPage")
 	public String insert() {
 		return "insertBoardPage";

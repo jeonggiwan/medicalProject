@@ -19,4 +19,8 @@ public class StudyDAOMybatis {
     public List<StudyVO> getStudyList() {
         return mybatis.selectList("StudyDAO.getStudyList");
     }
+    
+    public List<StudyVO> getPatientHistory(String pid) {
+        return mybatis.selectList("StudyDAO.getPatientHistory", pid);
+    }
 }

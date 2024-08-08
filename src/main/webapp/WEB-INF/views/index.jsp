@@ -13,36 +13,25 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
 	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link href="${pageContext.request.contextPath}/CSS/index.css"
 	rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 text-gray-900">
 	<div class="container">
-		<!-- Sidebar -->
-		<div class="sidebar">
-			<div class="sidebar-logo">
-				<img src="https://via.placeholder.com/40" alt="Logo"
-					class="rounded-full">
-			</div>
-			<div class="sidebar-buttons">
-				<button class="sidebar-button"></button>
-				<button class="sidebar-button"></button>
-				<button class="sidebar-button"></button>
-				<button class="sidebar-button"></button>
-			</div>
-			<div class="sidebar-logout">
-				<button id="logoutButton" class="logout-button">로그아웃</button>
-			</div>
-		</div>
 		<!-- Main Content -->
 		<div class="main-content">
 			<header class="header">
-				<h1 class="header-title">Mercy</h1>
-				<div class="header-buttons">
-					<button class="header-button"></button>
-					<button class="header-button"></button>
-					<button class="header-button"></button>
+				<div class="header-left">
+					<h1 class="header-title">Mercy</h1>
+					<span class="notification-icon"> 🔔 알림창</span>
+				</div>
+				<div class="header-right">
+					<a href="#" class="header-link">마이페이지</a> <a href="#"
+						class="header-link" id="logoutButton">로그아웃</a>
 				</div>
 			</header>
 			<div class="content">
@@ -65,38 +54,53 @@
 						<button class="search-button">설정</button>
 						<button class="search-button search-button-red">검색</button>
 					</div>
-					<table class="table">
-						<thead class="table-header">
-							<tr>
-								<th class="table-cell">선택</th>
-								<th class="table-cell">환자 ID</th>
-								<th class="table-cell">환자 이름</th>
-								<th class="table-cell">검사 날짜</th>
-								<th class="table-cell">검사 시간</th>
-								<th class="table-cell">모달리티</th>
-								<th class="table-cell">검사 설명</th>
-								<th class="table-cell">시리즈 수</th>
-								<th class="table-cell">이미지 수</th>
-								<th class="table-cell">Verify</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="study" items="${studyList}">
+					<div class="table-container">
+						<table class="table" id="patientTable">
+							<colgroup>
+								<col class="col-checkbox">
+								<col class="col-id">
+								<col class="col-name">
+								<col class="col-date">
+								<col class="col-time">
+								<col class="col-modality">
+								<col class="col-desc">
+								<col class="col-series">
+								<col class="col-images">
+								<col class="col-verify">
+							</colgroup>
+							<thead class="table-header">
 								<tr>
-									<td class="table-cell text-center"><input type="checkbox"></td>
-									<td class="table-cell">${study.pid}</td>
-									<td class="table-cell">${study.pName}</td>
-									<td class="table-cell">${study.studyDate}</td>
-									<td class="table-cell">${study.studyTime}</td>
-									<td class="table-cell">${study.modality}</td>
-									<td class="table-cell">${study.studyDesc}</td>
-									<td class="table-cell">${study.seriesCnt}</td>
-									<td class="table-cell">${study.imageCnt}</td>
-									<td class="table-cell"><button class="verify-button">Verify</button></td>
+									<th class="table-cell">선택</th>
+									<th class="table-cell">환자 ID</th>
+									<th class="table-cell">환자 이름</th>
+									<th class="table-cell">검사 날짜</th>
+									<th class="table-cell">검사 시간</th>
+									<th class="table-cell">모달리티</th>
+									<th class="table-cell">검사 설명</th>
+									<th class="table-cell">시리즈 수</th>
+									<th class="table-cell">이미지 수</th>
+									<th class="table-cell">Verify</th>
 								</tr>
-							</c:forEach>
-						</tbody>
-					</table>
+							</thead>
+							<tbody>
+								<c:forEach var="study" items="${studyList}">
+									<tr class="patient-row" data-pid="${study.pid}"
+										data-pname="${study.pName}">
+										<td class="table-cell text-center"><input type="checkbox"></td>
+										<td class="table-cell">${study.pid}</td>
+										<td class="table-cell">${study.pName}</td>
+										<td class="table-cell">${study.studyDate}</td>
+										<td class="table-cell">${study.studyTime}</td>
+										<td class="table-cell">${study.modality}</td>
+										<td class="table-cell">${study.studyDesc}</td>
+										<td class="table-cell">${study.seriesCnt}</td>
+										<td class="table-cell">${study.imageCnt}</td>
+										<td class="table-cell"><button class="verify-button">Verify</button></td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</div>
 				</div>
 
 				<!-- 페이지네이션 추가 -->
@@ -124,80 +128,153 @@
 					<div>
 						<h2 class="search-title">과거 검사 이력</h2>
 						<div class="search-inputs">
-							<input type="text" placeholder="환자 아이디" class="search-input">
-							<input type="text" placeholder="환자 이름" class="search-input">
+							<input type="text" id="selectedPatientId" placeholder="환자 아이디"
+								class="search-input" readonly> <input type="text"
+								id="selectedPatientName" placeholder="환자 이름"
+								class="search-input" readonly>
 						</div>
-						<table class="table">
-							<thead class="table-header">
-								<tr>
-									<th class="table-cell">검사실비</th>
-									<th class="table-cell">검사실명</th>
-									<th class="table-cell">검사실실</th>
-									<th class="table-cell">판독상태</th>
-									<th class="table-cell">시리즈</th>
-									<th class="table-cell">이미지</th>
-									<th class="table-cell">Verify</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td class="table-cell">12345</td>
-									<td class="table-cell">홍길동</td>
-									<td class="table-cell">A</td>
-									<td class="table-cell">완료</td>
-									<td class="table-cell">3</td>
-									<td class="table-cell">5</td>
-									<td class="table-cell"><button class="verify-button">Verify</button></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div>
-						<h2 class="search-title">리포트</h2>
-						<div>
-							<textarea placeholder="코멘트" class="textarea"></textarea>
-							<textarea placeholder="문제" class="textarea"></textarea>
-							<textarea placeholder="결론" class="textarea"></textarea>
-						</div>
-						<div>
-							<select class="select">
-								<option>Common</option>
-							</select> <select class="select">
-								<option>Report Code</option>
-							</select> <input type="text" placeholder="에디터아이디" class="search-input">
-							<input type="text" placeholder="판독의" class="search-input">
-							<input type="text" placeholder="판독시간" class="search-input">
-						</div>
-						<div class="button-container">
-							<button class="search-button">취소</button>
-							<button class="search-button search-button-red">저장</button>
+						<div class="table-container">
+							<table class="table" id="historyTable">
+								<colgroup>
+									<col class="col-date">
+									<col class="col-time">
+									<col class="col-modality">
+									<col class="col-desc">
+									<col class="col-series">
+									<col class="col-images">
+									<col class="col-verify">
+								</colgroup>
+								<thead class="table-header">
+									<tr>
+										<th class="table-cell">검사 날짜</th>
+										<th class="table-cell">검사 시간</th>
+										<th class="table-cell">모달리티</th>
+										<th class="table-cell">검사 설명</th>
+										<th class="table-cell">시리즈</th>
+										<th class="table-cell">이미지</th>
+										<th class="table-cell">Verify</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!-- 동적으로 채워질 내용 -->
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<div class="sidebar">
+			<h2 class="sidebar-title">진료일정</h2>
+			<div id="calendar" class="calendar"></div>
+		</div>
 	</div>
+
 	<script>
-    $('#logoutButton').click(function() {
-        $.ajax({
-            url: '/logout',
-            type: 'POST',
-            xhrFields: {
-                withCredentials: true
-            },
-            success: function(response) {
-                console.log('Logout successful');
-                document.cookie = "REFRESH_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                localStorage.removeItem('accessToken'); // 액세스 토큰 제거
-                window.location.href = '/login';
-            },
-            error: function(xhr, status, error) {
-                console.error('Logout failed:', error);
-                alert('로그아웃 중 오류가 발생했습니다.');
-            }
-        });
-    });
-    </script>
+		$(document)
+				.ready(
+						function() {
+							$('#patientTable')
+									.on(
+											'click',
+											'.patient-row',
+											function() {
+												var pid = $(this).data('pid');
+												var pName = $(this).data(
+														'pname');
+
+												$('#selectedPatientId')
+														.val(pid);
+												$('#selectedPatientName').val(
+														pName);
+
+												// AJAX 호출로 과거 검사 이력 가져오기
+												$
+														.ajax({
+															url : '/getPatientHistory',
+															type : 'GET',
+															data : {
+																pid : pid
+															},
+															success : function(
+																	response) {
+																if (response
+																		&& response.length > 0) {
+																	updateHistoryTable(response);
+																} else {
+																	$(
+																			'#historyTable tbody')
+																			.html(
+																					'<tr><td colspan="7">No history found</td></tr>');
+																}
+															},
+															error : function(
+																	xhr,
+																	status,
+																	error) {
+																console
+																		.error(
+																				'Error fetching patient history:',
+																				error);
+																$(
+																		'#historyTable tbody')
+																		.html(
+																				'<tr><td colspan="7">Error loading history</td></tr>');
+															}
+														});
+											});
+
+							// 달력 초기화
+							flatpickr("#calendar", {
+								inline : true,
+								mode : "multiple",
+								dateFormat : "Y-m-d"
+							});
+						});
+
+		function updateHistoryTable(historyData) {
+			var tbody = $('#historyTable tbody');
+			tbody.empty();
+
+			historyData.forEach(function(item) {
+				var row = $('<tr>');
+				row.append($('<td>').text(item.studyDate));
+				row.append($('<td>').text(item.studyTime));
+				row.append($('<td>').text(item.modality));
+				row.append($('<td>').text(item.studyDesc));
+				row.append($('<td>').text(item.seriesCnt));
+				row.append($('<td>').text(item.imageCnt));
+				row.append($('<td>').html(
+						'<button class="verify-button">Verify</button>'));
+				tbody.append(row);
+			});
+		}
+
+		$('#logoutButton')
+				.click(
+						function() {
+							$
+									.ajax({
+										url : '/logout',
+										type : 'POST',
+										xhrFields : {
+											withCredentials : true
+										},
+										success : function(response) {
+											console.log('Logout successful');
+											document.cookie = "REFRESH_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+											localStorage
+													.removeItem('accessToken'); // 액세스 토큰 제거
+											window.location.href = '/login';
+										},
+										error : function(xhr, status, error) {
+											console.error('Logout failed:',
+													error);
+											alert('로그아웃 중 오류가 발생했습니다.');
+										}
+									});
+						});
+	</script>
 </body>
 
 </html>
