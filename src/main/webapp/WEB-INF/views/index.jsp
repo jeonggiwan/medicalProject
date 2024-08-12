@@ -140,57 +140,35 @@
 		$(document)
 				.ready(
 						function() {
-							$('#patientTable')
-									.on(
-											'click',
-											'.patient-row',
-											function() {
-												var pid = $(this).data('pid');
-												var pName = $(this).data(
-														'pname');
+							$('#studyTableBody').on('click', '.patient-row', function() {
+								var pid = $(this).data('pid');
+								var pName = $(this).data('pname');
 
-												$('#selectedPatientId')
-														.val(pid);
-												$('#selectedPatientName').val(
-														pName);
+								$('#selectedPatientId').val(pid);
+								$('#selectedPatientName').val(pName);
 
-												// AJAX 호출로 과거 검사 이력 가져오기
-												$
-														.ajax({
-															url : '/getPatientHistory',
-															type : 'GET',
-															data : {
-																pid : pid
-															},
-															success : function(
-																	response) {
-																if (response
-																		&& response.length > 0) {
-																	updateHistoryTable(response);
-																} else {
-																	$(
-																			'#historyTable tbody')
-																			.html(
-																					'<tr><td colspan="7">No history found</td></tr>');
-																}
-															},
-															error : function(
-																	xhr,
-																	status,
-																	error) {
-																console
-																		.error(
-																				'Error fetching patient history:',
-																				error);
-																$(
-																		'#historyTable tbody')
-																		.html(
-																				'<tr><td colspan="7">Error loading history</td></tr>');
-															}
-														});
-											});
+								// AJAX 호출로 과거 검사 이력 가져오기
+								$.ajax({
+									url: '/getPatientHistory',
+									type: 'GET',
+									data: { pid: pid },
+									success: function(response) {
+										if (typeof response === 'string') {
+											$('#historyTable tbody').html('<tr><td colspan="6">' + response + '</td></tr>');
+										} else if (response && response.length > 0) {
+											updateHistoryTable(response);
+										} else {
+											$('#historyTable tbody').html('<tr><td colspan="6">자료가 없습니다.</td></tr>');
+										}
+									},
+									error: function(xhr, status, error) {
+										console.error('과거 검사 이력 조회 중 오류 발생:', error);
+										$('#historyTable tbody').html('<tr><td colspan="6">이력 로딩 중 오류가 발생했습니다.</td></tr>');
+									}
+								});
+							});
 
-							 // 달력 초기화
+							// 달력 초기화
 				            const calendarEl = document.getElementById('calendar');
 				            const fp = flatpickr(calendarEl, {
 				                inline: true,
@@ -236,18 +214,23 @@
 
 		function updateHistoryTable(historyData) {
 			var tbody = $('#historyTable tbody');
-			tbody.empty();
+			tbody.empty(); // 기존 내용을 지웁니다
 
-			historyData.forEach(function(item) {
-				var row = $('<tr>');
-				row.append($('<td>').text(item.studyDate));
-				row.append($('<td>').text(item.studyTime));
-				row.append($('<td>').text(item.modality));
-				row.append($('<td>').text(item.studyDesc));
-				row.append($('<td>').text(item.seriesCnt));
-				row.append($('<td>').text(item.imageCnt));
-				tbody.append(row);
-			});
+			if (historyData && historyData.length > 0) {
+				historyData.forEach(function(study) {
+					var row = $('<tr>');
+					row.append($('<td>').text(study.studyDate || '-'));
+					row.append($('<td>').text(study.studyTime || '-'));
+					row.append($('<td>').text(study.modality || '-'));
+					row.append($('<td>').text(study.studyDesc || '-'));
+					row.append($('<td>').text(study.seriesCnt || '-'));
+					row.append($('<td>').text(study.imageCnt || '-'));
+					tbody.append(row);
+				});
+			} else {
+				// 데이터가 없을 경우 메시지 표시
+				tbody.append('<tr><td colspan="6">과거 검사 이력이 없습니다.</td></tr>');
+			}
 		}
 
 		let currentPage = 1;
@@ -285,16 +268,16 @@
 
 			let tableContent = '';
 			$.each(pageStudies, function(index, study) {
-				tableContent += '<tr class="patient-row" data-pid="' + study.pid + '" data-pname="' + study.pName + '">';
+				tableContent += '<tr class="patient-row" data-pid="' + (study.pid || '') + '" data-pname="' + (study.pName || '') + '">';
 				tableContent += '<td class="table-cell text-center"><input type="checkbox"></td>';
-				tableContent += '<td class="table-cell">' + study.pid + '</td>';
-				tableContent += '<td class="table-cell">' + study.pName + '</td>';
-				tableContent += '<td class="table-cell">' + study.studyDate + '</td>';
-				tableContent += '<td class="table-cell">' + study.studyTime + '</td>';
-				tableContent += '<td class="table-cell">' + study.modality + '</td>';
-				tableContent += '<td class="table-cell">' + study.studyDesc + '</td>';
-				tableContent += '<td class="table-cell">' + study.seriesCnt + '</td>';
-				tableContent += '<td class="table-cell">' + study.imageCnt + '</td>';
+				tableContent += '<td class="table-cell">' + (study.pid || '-') + '</td>';
+				tableContent += '<td class="table-cell">' + (study.pName || '-') + '</td>';
+				tableContent += '<td class="table-cell">' + (study.studyDate || '-') + '</td>';
+				tableContent += '<td class="table-cell">' + (study.studyTime || '-') + '</td>';
+				tableContent += '<td class="table-cell">' + (study.modality || '-') + '</td>';
+				tableContent += '<td class="table-cell">' + (study.studyDesc || '-') + '</td>';
+				tableContent += '<td class="table-cell">' + (study.seriesCnt || '-') + '</td>';
+				tableContent += '<td class="table-cell">' + (study.imageCnt || '-') + '</td>';
 				tableContent += '</tr>';
 			});
 			$('#studyTableBody').html(tableContent);
