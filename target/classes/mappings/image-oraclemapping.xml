@@ -6,3 +6,4 @@
 <select id="getImagePath" resultType="string" parameterType="map">
     SELECT CONCAT(path, fName) FROM IMAGETAB WHERE STUDYKEY=#{studyKey} AND SERIESKEY=#{seriesKey};
 </select>
+</mapper>

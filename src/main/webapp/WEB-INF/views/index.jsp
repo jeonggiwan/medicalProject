@@ -245,6 +245,7 @@
 				success: function(response) {
 					if (typeof response === 'string') {
 						$('#studyTableBody').html('<tr><td colspan="10">' + response + '</td></tr>');
+						$('.pagination').remove(); // 페이지네이션 제거
 					} else if (response && response.length > 0) {
 						allStudies = response;
 						currentPage = 1;
@@ -252,11 +253,13 @@
 						setupPagination();
 					} else {
 						$('#studyTableBody').html('<tr><td colspan="10">자료가 없습니다.</td></tr>');
+						$('.pagination').remove(); // 페이지네이션 제거
 					}
 				},
 				error: function(xhr, status, error) {
 					console.error('Error fetching studies:', error);
 					$('#studyTableBody').html('<tr><td colspan="10">Error loading studies</td></tr>');
+					$('.pagination').remove(); // 페이지네이션 제거
 				}
 			});
 		}
@@ -290,6 +293,9 @@
 				paginationHtml += '<button onclick="changePage(' + i + ')">' + i + '</button>';
 			}
 			paginationHtml += '</div>';
+			
+			// 기존 페이지네이션 제거 후 새로 추가
+			$('.pagination').remove();
 			$('#studyTable').after(paginationHtml);
 		}
 
