@@ -11,4 +11,36 @@
 		SELECT * FROM PACSPLUS.STUDYTAB WHERE PID = #{pid} ORDER BY STUDY_DATE DESC,
 		STUDY_TIME DESC
 	</select>
+
+	<select id="getStudiesByPeriod" resultType="study" parameterType="string">
+    SELECT 
+        STUDYKEY as studyKey,
+        STUDYINSUID as studyInsUid,
+        STUDYDATE as studyDate,
+        STUDYTIME as studyTime,
+        ACCESSNUM as accessionNum,
+        STUDYID as studyId,
+        STUDYDESC as studyDesc,
+        MODALITY as modality,
+        BODYPART as bodyPart,
+        PID as pid,
+        PNAME as pName,
+        PSEX as pSex,
+        PBIRTHDATETIME as birthDateTime,
+        PATAGE as pAge,
+        SERIESCNT as seriesCnt,
+        IMAGECNT as imageCnt,
+        DELFLAG as delFlag
+    FROM PACSPLUS.STUDYTAB 
+    WHERE REPLACE(STUDYDATE, '''', '') >= 
+    CASE 
+        WHEN #{period} = 'all' THEN '00010101'
+        WHEN #{period} = '1d' THEN TO_CHAR(SYSDATE - 1, 'YYYYMMDD')
+        WHEN #{period} = '1w' THEN TO_CHAR(SYSDATE - 7, 'YYYYMMDD')
+        WHEN #{period} = '1m' THEN TO_CHAR(ADD_MONTHS(SYSDATE, -1), 'YYYYMMDD')
+        WHEN #{period} = '3m' THEN TO_CHAR(ADD_MONTHS(SYSDATE, -3), 'YYYYMMDD')
+        ELSE TO_CHAR(SYSDATE, 'YYYYMMDD')
+    END
+    ORDER BY STUDYDATE DESC, STUDYTIME DESC
+</select>
 </mapper>

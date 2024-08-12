@@ -45,17 +45,17 @@
 						</select>
 					</div>
 					<div class="search-buttons">
-						<button class="search-button">전체</button>
-						<button class="search-button">1일</button>
-						<button class="search-button">3일</button>
-						<button class="search-button">1주일</button>
-						<button class="search-button">1개월</button>
-						<button class="search-button">3개월</button>
-						<button class="search-button">설정</button>
-						<button class="search-button search-button-red">검색</button>
+						<button class="search-button" onclick="filterByPeriod('all')">전체</button>
+						<button class="search-button" onclick="filterByPeriod('1d')">1일</button>
+						<button class="search-button" onclick="filterByPeriod('3d')">3일</button>
+						<button class="search-button" onclick="filterByPeriod('1w')">1주일</button>
+						<button class="search-button" onclick="filterByPeriod('1m')">1개월</button>
+						<button class="search-button" onclick="filterByPeriod('3m')">3개월</button>
+						<button class="search-button" onclick="filterByPeriod('custom')">설정</button>
+						<button class="search-button search-button-red" onclick="searchPatients()">검색</button>
 					</div>
 					<div class="table-container">
-						<table class="table" id="patientTable">
+						<table class="table" id="studyTable">
 							<colgroup>
 								<col class="col-checkbox">
 								<col class="col-id">
@@ -80,47 +80,13 @@
 									<th class="table-cell">이미지 수</th>
 								</tr>
 							</thead>
-							<tbody>
-								<c:forEach var="study" items="${studyList}">
-									<tr class="patient-row" data-pid="${study.pid}"
-										data-pname="${study.pName}">
-										<td class="table-cell text-center"><input type="checkbox"></td>
-										<td class="table-cell">${study.pid}</td>
-										<td class="table-cell">${study.pName}</td>
-										<td class="table-cell">${study.studyDate}</td>
-										<td class="table-cell">${study.studyTime}</td>
-										<td class="table-cell">${study.modality}</td>
-										<td class="table-cell">${study.studyDesc}</td>
-										<td class="table-cell">${study.seriesCnt}</td>
-										<td class="table-cell">${study.imageCnt}</td>
-									</tr>
-								</c:forEach>
+							<tbody id="studyTableBody">
+								<!-- 정보 불러오는 곳 -->
 							</tbody>
 						</table>
 					</div>
 				</div>
 
-				<!-- 페이지네이션 추가 -->
-				<div class="pagination">
-					<c:if test="${currentPage > 1}">
-						<a href="?page=${currentPage - 1}">&laquo; 이전</a>
-					</c:if>
-
-					<c:forEach begin="1" end="${totalPages}" var="i">
-						<c:choose>
-							<c:when test="${currentPage eq i}">
-								<span class="current-page">${i}</span>
-							</c:when>
-							<c:otherwise>
-								<a href="?page=${i}">${i}</a>
-							</c:otherwise>
-						</c:choose>
-					</c:forEach>
-
-					<c:if test="${currentPage < totalPages}">
-						<a href="?page=${currentPage + 1}">다음 &raquo;</a>
-					</c:if>
-				</div>
 				<div class="grid-container">
 					<div>
 						<h2 class="search-title">과거 검사 이력</h2>
@@ -282,6 +248,71 @@
 				row.append($('<td>').text(item.imageCnt));
 				tbody.append(row);
 			});
+		}
+
+		let currentPage = 1;
+		const itemsPerPage = 5;
+		let allStudies = [];
+
+		function filterByPeriod(period) {
+			$.ajax({
+				url: '/getDay',
+				type: 'GET',
+				data: { period: period },
+				success: function(response) {
+					if (typeof response === 'string') {
+						$('#studyTableBody').html('<tr><td colspan="10">' + response + '</td></tr>');
+					} else if (response && response.length > 0) {
+						allStudies = response;
+						currentPage = 1;
+						displayStudies();
+						setupPagination();
+					} else {
+						$('#studyTableBody').html('<tr><td colspan="10">자료가 없습니다.</td></tr>');
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error('Error fetching studies:', error);
+					$('#studyTableBody').html('<tr><td colspan="10">Error loading studies</td></tr>');
+				}
+			});
+		}
+
+		function displayStudies() {
+			const start = (currentPage - 1) * itemsPerPage;
+			const end = start + itemsPerPage;
+			const pageStudies = allStudies.slice(start, end);
+
+			let tableContent = '';
+			$.each(pageStudies, function(index, study) {
+				tableContent += '<tr class="patient-row" data-pid="' + study.pid + '" data-pname="' + study.pName + '">';
+				tableContent += '<td class="table-cell text-center"><input type="checkbox"></td>';
+				tableContent += '<td class="table-cell">' + study.pid + '</td>';
+				tableContent += '<td class="table-cell">' + study.pName + '</td>';
+				tableContent += '<td class="table-cell">' + study.studyDate + '</td>';
+				tableContent += '<td class="table-cell">' + study.studyTime + '</td>';
+				tableContent += '<td class="table-cell">' + study.modality + '</td>';
+				tableContent += '<td class="table-cell">' + study.studyDesc + '</td>';
+				tableContent += '<td class="table-cell">' + study.seriesCnt + '</td>';
+				tableContent += '<td class="table-cell">' + study.imageCnt + '</td>';
+				tableContent += '</tr>';
+			});
+			$('#studyTableBody').html(tableContent);
+		}
+
+		function setupPagination() {
+			const totalPages = Math.ceil(allStudies.length / itemsPerPage);
+			let paginationHtml = '<div class="pagination">';
+			for (let i = 1; i <= totalPages; i++) {
+				paginationHtml += '<button onclick="changePage(' + i + ')">' + i + '</button>';
+			}
+			paginationHtml += '</div>';
+			$('#studyTable').after(paginationHtml);
+		}
+
+		function changePage(page) {
+			currentPage = page;
+			displayStudies();
 		}
 
 		$('#logoutButton')

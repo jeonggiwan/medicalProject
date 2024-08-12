@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -110,4 +111,14 @@ public class HomeController {
     	return "getBoardList";							
 	}
 	
+	@GetMapping("/getDay")
+   @ResponseBody
+   public ResponseEntity<?> getDay(@RequestParam String period) {
+       List<StudyVO> studies = studyService.getStudiesByPeriod(period);
+       System.out.println("Period: " + period + ", Studies found: " + studies.size());
+       if (studies.isEmpty()) {
+           return ResponseEntity.ok("해당 기간에 데이터가 없습니다.");
+       }
+       return ResponseEntity.ok(studies);
+	}
 }

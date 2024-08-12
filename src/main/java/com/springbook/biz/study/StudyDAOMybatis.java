@@ -23,4 +23,12 @@ public class StudyDAOMybatis {
     public List<StudyVO> getPatientHistory(String pid) {
         return mybatis.selectList("StudyDAO.getPatientHistory", pid);
     }
+
+    public List<StudyVO> getStudiesByPeriod(String period) {
+        List<StudyVO> studies = mybatis.selectList("StudyDAO.getStudiesByPeriod", period);
+        System.out.println("Period: " + period + ", Studies found in DAO: " + studies.size());
+        return studies;
+    }
+
+    
 }
