@@ -8,6 +8,7 @@
         <typeAlias type="com.springbook.biz.VO.BoardVO" alias="board"></typeAlias>
         <typeAlias type="com.springbook.biz.VO.MemberVO" alias="member"></typeAlias>
         <typeAlias type="com.springbook.biz.VO.StudyVO" alias="study"></typeAlias>
+        <typeAlias type="com.springbook.biz.VO.ScheduleVO" alias="schedule"></typeAlias>
     </typeAliases>
     
 </configuration>

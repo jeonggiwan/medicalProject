@@ -8,17 +8,16 @@ import org.springframework.stereotype.Repository;
 import com.springbook.biz.VO.MemberVO;
 
 @Repository
-
-public class MemberDAOMybatis{
-	@Autowired
-	@Qualifier("sqlSession") 
-	private SqlSessionTemplate mybatis;
-	
-	public MemberVO login(MemberVO vo) {
-		return (MemberVO)mybatis.selectOne("MemberDAO.login", vo);	
-	}
-	
-	public MemberVO getMemberById(String id) {
-	    return mybatis.selectOne("MemberDAO.getMemberById", id);
-	}
+public class MemberDAOMybatis {
+    @Autowired
+    @Qualifier("sqlSession") 
+    private SqlSessionTemplate mybatis;
+    
+    public MemberVO login(MemberVO vo) {
+        return mybatis.selectOne("MemberDAO.login", vo);  
+    }
+    
+    public MemberVO getMemberById(String id) {
+        return mybatis.selectOne("MemberDAO.getMemberById", id);
+    }
 }

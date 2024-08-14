@@ -40,36 +40,60 @@
 	</div>
 	<script>
 		$(function() {
-			
+			// AJAX 설정
 			$.ajaxSetup({
-			    beforeSend: function(xhr) {
-			        var token = localStorage.getItem('accessToken');
-			        if (token) {
-			            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-			        }
-			    }
-			});
-
-
-			$('#loginForm').submit(function(event) {
-				event.preventDefault();
-				$.ajax({
-					type : 'POST',
-					url : '/login',
-					data : {
-						id : $('#username').val(),
-						password : $('#password').val()
-					},
-					success: function(data) {
-					    localStorage.setItem('accessToken', data.accessToken);
-					    window.location.href = '/';
-					},
-					error : function(xhr, status, error) {
-						console.error('로그인 실패:', error);
-						alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+				beforeSend : function(xhr) {
+					var token = localStorage.getItem('accessToken');
+					if (token) {
+						xhr
+								.setRequestHeader('Authorization', 'Bearer '
+										+ token);
 					}
-				});
+				}
 			});
+
+			$('#loginForm')
+					.submit(
+							function(event) {
+								event.preventDefault();
+								$
+										.ajax({
+											type : 'POST',
+											url : '/login',
+											data : {
+												id : $('#username').val(),
+												password : $('#password').val()
+											},
+											success : function(data) {
+												console.log('Login response:',
+														data); // 응답 로깅
+												if (data.accessToken) {
+													localStorage.setItem(
+															'accessToken',
+															data.accessToken);
+													console
+															.log(
+																	'Stored access token:',
+																	data.accessToken); // 저장된 토큰 로깅
+													window.location.href = '/';
+												} else {
+													console
+															.error('No access token in response');
+												}
+											},
+											error : function(xhr, status, error) {
+												console.error('로그인 실패:', error);
+												alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+											}
+										});
+							});
+
+			// 페이지 로드 시 토큰 확인
+			$(document).ready(
+					function() {
+						console.log('Current stored token:', localStorage
+								.getItem('accessToken'));
+					});
 		});
 	</script>
 </body>
