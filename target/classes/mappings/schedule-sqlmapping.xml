@@ -3,7 +3,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ScheduleDAO">
-    <insert id="insertSchedule">
+    <insert id="insertSchedule" parameterType="schedule">
         INSERT INTO schedule (id, Day, detail)
         VALUES (#{id}, #{day}, #{detail})
     </insert>

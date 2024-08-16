@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -56,6 +57,29 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public TokenInfo createAccessTokenInfo(String username) {
+        return createTokenInfo(username, accessTokenValidMillisecond);
+    }
+
+    public TokenInfo createRefreshTokenInfo(String username) {
+        return createTokenInfo(username, refreshTokenValidMillisecond);
+    }
+
+    private TokenInfo createTokenInfo(String username, long validityInMilliseconds) {
+        Claims claims = Jwts.claims().setSubject(username);
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + validityInMilliseconds);
+
+        String token = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+
+        return new TokenInfo(token, validity);
+    }
+
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
@@ -65,35 +89,46 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-
     public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        
-        // Check for token in cookies
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("REFRESH_TOKEN".equals(cookie.getName())) {
+                if ("ACCESS_TOKEN".equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
         }
-        
         return null;
     }
+    
+    public void setAccessTokenCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie("ACCESS_TOKEN", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge((int) (accessTokenValidMillisecond / 1000)); // Convert to seconds
+        response.addCookie(cookie);
+    }
+    
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            boolean isValid = !claims.getBody().getExpiration().before(new Date());
-            System.out.println("Token validation result: " + isValid);
-            System.out.println("Token expiration: " + claims.getBody().getExpiration());
-            return isValid;
+            return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            System.out.println("Invalid JWT token: " + e.getMessage());
             return false;
         }
     }
+    
+    public long getExpiration(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return claims.getBody().getExpiration().getTime();
+        } catch (JwtException | IllegalArgumentException e) {
+            return 0;
+        }
+    }
+
+    public long getRefreshTokenValidMillisecond() {
+        return refreshTokenValidMillisecond;
+    }
+
 }

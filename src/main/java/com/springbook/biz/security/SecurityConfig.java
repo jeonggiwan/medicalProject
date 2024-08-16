@@ -11,15 +11,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.springbook.biz.member.MemberDAOMybatis;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberDAOMybatis memberDAO;
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, MemberDAOMybatis memberDAO) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.memberDAO = memberDAO;
     }
 
     @Bean
@@ -30,15 +32,16 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-                .antMatchers("/login", "/logout","/refresh-token","/validateToken","/public/**", "/CSS/**", "/js/**", "/images/**").permitAll()
+                .antMatchers("/login", "/logout", "/refreshToken", "/validateToken", "/public/**", "/CSS/**", "/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated()
             .and()
             .exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) -> 
                     response.sendRedirect("/login"))
             .and()
+            .logout().disable()  // 기본 로그아웃 기능 비활성화
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-
+        
         return http.build();
     }
 

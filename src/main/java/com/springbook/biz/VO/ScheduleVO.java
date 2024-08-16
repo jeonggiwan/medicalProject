@@ -3,20 +3,20 @@ package com.springbook.biz.VO;
 import java.util.Date;
 
 public class ScheduleVO {
-    private Integer id;
-    private Date day;
+    private String id;
+    private String day;
     private String detail;
 
-    public Integer getId() {
+    public String getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	public Date getDay() {
+	public String getDay() {
 		return day;
 	}
-	public void setDay(Date day) {
+	public void setDay(String day) {
 		this.day = day;
 	}
 	public String getDetail() {

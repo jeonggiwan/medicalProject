@@ -24,16 +24,7 @@
 	<div class="container">
 		<!-- Main Content -->
 		<div class="main-content">
-			<header class="header">
-				<div class="header-left">
-					<h1 class="header-title">Mercy</h1>
-					<span class="notification-icon"> 🔔 알림창</span>
-				</div>
-				<div class="header-right">
-					<a href="#" class="header-link">마이페이지</a> <a href="#"
-						class="header-link" id="logoutButton">로그아웃</a>
-				</div>
-			</header>
+			<jsp:include page="menu.jsp" />
 			<div class="content">
 				<div class="search-section">
 					<h2 class="search-title">검색</h2>
@@ -171,223 +162,217 @@
 			</div>
 		</div>
 	</div>
-
 	<script>
-		$(document).ready(function() {
-			setupEventListeners();
-			initializeCalendar();
-			setupAjaxInterceptor();
-		});
+$(document).ready(function () {
+    setupAjaxInterceptor();
+    setupEventListeners();
+    initializeCalendar();
+});
 
-		function setupAjaxInterceptor() {
-			$.ajaxSetup({
-				beforeSend : function(xhr) {
-					var token = localStorage.getItem('accessToken');
-					if (token) {
-						xhr
-								.setRequestHeader('Authorization', 'Bearer '
-										+ token);
-					}
-				}
-			});
-		}
-		function setupEventListeners() {
-			$('#patientTable').on('click', '.patient-row',
-					handlePatientRowClick);
-			$('#logoutButton').click(handleLogout);
-			$('#saveButton').click(handleMemoSave);
-		}
+function setupAjaxInterceptor() {
+    $.ajaxSetup({
+        beforeSend: function (xhr) {
+            var token = localStorage.getItem('accessToken');
+            if (token) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            }
+        }
+    });
 
-		function handlePatientRowClick() {
-			var pid = $(this).data('pid');
-			var pName = $(this).data('pname');
+    $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
+        if (jqXHR.status === 401) {
+            refreshToken().then(function () {
+                $.ajax(ajaxSettings);
+            }).catch(function () {
+                window.location.href = '/login';
+            });
+        }
+    });
+}
 
-			$('#selectedPatientId').val(pid);
-			$('#selectedPatientName').val(pName);
+function setupEventListeners() {
+    $('#patientTable').on('click', '.patient-row', handlePatientRowClick);
+    $('#logoutButton').click(handleLogout);
+    $('#saveButton').click(handleMemoSave);
+}
 
-			fetchPatientHistory(pid);
-		}
+function handlePatientRowClick() {
+    var pid = $(this).data('pid');
+    var pName = $(this).data('pname');
+    $('#selectedPatientId').val(pid);
+    $('#selectedPatientName').val(pName);
+    fetchPatientHistory(pid);
+}
 
-		function fetchPatientHistory(pid) {
-			$
-					.ajax({
-						url : '/getPatientHistory',
-						type : 'GET',
-						data : {
-							pid : pid
-						},
-						success : function(response) {
-							if (response && response.length > 0) {
-								updateHistoryTable(response);
-							} else {
-								$('#historyTable tbody')
-										.html(
-												'<tr><td colspan="7">No history found</td></tr>');
-							}
-						},
-						error : function(xhr, status, error) {
-							console.error('Error fetching patient history:',
-									error);
-							$('#historyTable tbody')
-									.html(
-											'<tr><td colspan="7">Error loading history</td></tr>');
-						}
-					});
-		}
+function fetchPatientHistory(pid) {
+    $.ajax({
+        url: '/getPatientHistory',
+        type: 'GET',
+        data: { pid: pid },
+        success: function (response) {
+            if (response && response.length > 0) {
+                updateHistoryTable(response);
+            } else {
+                $('#historyTable tbody').html('<tr><td colspan="7">No history found</td></tr>');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching patient history:', error);
+            if (xhr.status !== 401) {
+                $('#historyTable tbody').html('<tr><td colspan="7">Error loading history</td></tr>');
+            }
+        }
+    });
+}
 
-		function handleLogout() {
-			$.ajax({
-				url : '/logout',
-				type : 'POST',
-				success : function(response) {
-					console.log('Logout successful');
-					window.location.href = '/login';
-				},
-				error : function(xhr, status, error) {
-					console.error('Logout failed:', error);
-					alert('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.');
-				}
-			});
-		}
+function updateHistoryTable(historyData) {
+    var tbody = $('#historyTable tbody');
+    tbody.empty();
 
-		function handlePatientRowClick() {
-			var pid = $(this).data('pid');
-			var pName = $(this).data('pname');
+    historyData.forEach(function (item) {
+        var row = $('<tr>');
+        row.append($('<td>').text(item.studyDate));
+        row.append($('<td>').text(item.studyTime));
+        row.append($('<td>').text(item.modality));
+        row.append($('<td>').text(item.studyDesc));
+        row.append($('<td>').text(item.seriesCnt));
+        row.append($('<td>').text(item.imageCnt));
+        tbody.append(row);
+    });
+}
 
-			$('#selectedPatientId').val(pid);
-			$('#selectedPatientName').val(pName);
+function handleLogout() {
+    $.ajax({
+        url: '/logout',
+        type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function (response) {
+            console.log('Logout successful');
+            window.location.href = '/login';
+        },
+        error: function (xhr, status, error) {
+            console.error('Logout failed:', error);
+            alert('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+    });
+}
 
-			fetchPatientHistory(pid);
-		}
+function initializeCalendar() {
+    const calendarEl = document.getElementById('calendar');
+    flatpickr(calendarEl, {
+        inline: true,
+        mode: "single",
+        dateFormat: "Y-m-d",
+        onChange: function(selectedDates, dateStr, instance) {
+            if (selectedDates.length > 0) {
+                loadMemo(dateStr);
+            } else {
+                console.log("No date selected.");
+            }
+        }
+    });
+}
 
-		function fetchPatientHistory(pid) {
-			$
-					.ajax({
-						url : '/getPatientHistory',
-						type : 'GET',
-						data : {
-							pid : pid
-						},
-						success : function(response) {
-							if (response && response.length > 0) {
-								updateHistoryTable(response);
-							} else {
-								$('#historyTable tbody')
-										.html(
-												'<tr><td colspan="7">No history found</td></tr>');
-							}
-						},
-						error : function(xhr, status, error) {
-							console.error('Error fetching patient history:',
-									error);
-							$('#historyTable tbody')
-									.html(
-											'<tr><td colspan="7">Error loading history</td></tr>');
-						}
-					});
-		}
 
-		function updateHistoryTable(historyData) {
-			var tbody = $('#historyTable tbody');
-			tbody.empty();
+function loadMemo(dateStr) {
+    console.log("Loading memo for date:", dateStr);
+    $.ajax({
+        url: 'getSchedule',
+        type: 'GET',
+        data: { day: dateStr },
+        success: function(response) {
+            console.log("Server response:", response);
+            if (response && response.detail) {
+                $('#memoTextarea').val(response.detail);
+            } else {
+                console.log("No memo found for this date");
+                $('#memoTextarea').val('');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading memo:', error);
+            alert('메모 로딩 중 오류가 발생했습니다. 상태: ' + status + ', 오류: ' + error);
+            $('#memoTextarea').val('');
+        }
+    });
+}
+function handleMemoSave() {
+    const calendarEl = document.getElementById('calendar');
+    const flatpickr = calendarEl._flatpickr;
 
-			historyData.forEach(function(item) {
-				var row = $('<tr>');
-				row.append($('<td>').text(item.studyDate));
-				row.append($('<td>').text(item.studyTime));
-				row.append($('<td>').text(item.modality));
-				row.append($('<td>').text(item.studyDesc));
-				row.append($('<td>').text(item.seriesCnt));
-				row.append($('<td>').text(item.imageCnt));
-				tbody.append(row);
-			});
-		}
+    // Ensure the Flatpickr instance and selected date are properly checked
+    if (!flatpickr || !flatpickr.selectedDates.length) {
+        alert('날짜를 선택해주세요.');
+        return;
+    }
 
-		function initializeCalendar() {
-			const calendarEl = document.getElementById('calendar');
-			const fp = flatpickr(calendarEl, {
-				inline : true,
-				mode : "multiple",
-				dateFormat : "Y-m-d",
-				onChange : function(selectedDates, dateStr, instance) {
-					loadMemo(dateStr);
-				}
-			});
-		}
+    const selectedDate = flatpickr.selectedDates[0];
+    const memo = $('#memoTextarea').val();
 
-		function loadMemo(dateStr) {
-			$.ajax({
-				url : '/getSchedule',
-				type : 'GET',
-				data : {
-					id : getUserId(), // 사용자 ID를 가져오는 함수 필요
-					day : dateStr
-				},
-				success : function(response) {
-					if (response && response.detail) {
-						$('#memoTextarea').val(response.detail);
-					} else {
-						$('#memoTextarea').val('');
-					}
-				},
-				error : function(xhr, status, error) {
-					console.error('Error loading memo:', error);
-					alert('메모를 불러오는 중 오류가 발생했습니다.');
-				}
-			});
-		}
-
-		function handleMemoSave() {
-			const selectedDates = flatpickr.selectedDates;
-			const memo = $('#memoTextarea').val();
-			if (selectedDates.length > 0) {
-				const dateStr = formatDate(selectedDates[selectedDates.length - 1]);
-				saveMemo(dateStr, memo);
-			} else {
-				alert('날짜를 선택해주세요.');
-			}
-		}
-
-		function saveMemo(dateStr, memo) {
-			$.ajax({
-				url : '/saveSchedule',
-				type : 'POST',
-				contentType : 'application/json',
-				data : JSON.stringify({
-					id : getUserId(), // 사용자 ID를 가져오는 함수 필요
-					day : dateStr,
-					detail : memo
-				}),
-				success : function(response) {
-					if (response === 'success') {
-						alert('메모가 저장되었습니다.');
-					} else {
-						alert('메모 저장에 실패했습니다.');
-					}
-				},
-				error : function(xhr, status, error) {
-					console.error('Error saving memo:', error);
-					alert('메모 저장 중 오류가 발생했습니다.');
-				}
-			});
-		}
-
-		function formatDate(date) {
-			const year = date.getFullYear();
-			const month = String(date.getMonth() + 1).padStart(2, '0');
-			const day = String(date.getDate()).padStart(2, '0');
-			return `${year}-${month}-${day}`;
-		}
-
-		function getUserId() {
-			// 사용자 ID를 가져오는 로직 구현 필요
-			// 예: 세션 스토리지나 다른 방법으로 저장된 사용자 ID 반환
-			return 'user123'; // 임시 예시
-		}
-
-		// 주기적으로 토큰 갱신 (15분마다)
-		setInterval(refreshToken, 15 * 60 * 1000);
-	</script>
+    console.log(selectedDate);
+    const dateStr = formatDate(selectedDate);
+    
+    if (dateStr) {
+        console.log("Saving memo for date:", selectedDate, "Content:", memo);
+        saveMemo(selectedDate, memo);
+    } else {
+        alert('유효한 날짜가 선택되지 않았습니다.');
+    }
+}
+function saveMemo(dateStr, memo) {
+    console.log("Saving memo for date:", dateStr, "Content:", memo);
+    $.ajax({
+        url: 'saveSchedule',
+        type: 'POST',
+        data: {
+            day: dateStr,
+            detail: memo
+        },
+        success: function(response) {
+            console.log("Server response:", response);
+            if (response === 'success') {
+                alert('메모가 저장되었습니다.');
+            } else {
+                alert('메모 저장에 실패했습니다. 서버 응답: ' + response);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error saving memo:', error);
+            alert('메모 저장 중 오류가 발생했습니다. 상태: ' + status + ', 오류: ' + error);
+        }
+    });
+}
+function formatDate(date) {
+    if (!(date instanceof Date) || isNaN(date)) {
+        console.error("Invalid date object:", date);
+        return null;
+    }
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+function refreshToken() {
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            url: '/refreshToken',
+            type: 'POST',
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(response) {
+                console.log('Token refreshed successfully');
+                resolve();
+            },
+            error: function(xhr, status, error) {
+                console.error('Token refresh failed:', error);
+                reject();
+            }
+        });
+    });
+}
+</script>
 </body>
-
 </html>
