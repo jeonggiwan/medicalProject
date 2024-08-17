@@ -183,4 +183,14 @@ public class MemberServiceImpl implements MemberService {
         
         return new User(member.getId(), member.getPassword(), authorities);
     }
+    
+    @Override
+    public List<MemberVO> getAllMembers() {
+        return memberDAO.getAllMembers();
+    }
+
+    @Override
+    public List<MemberVO> searchMembers(String id, String name) {
+        return memberDAO.searchMembers(id, name);
+    }
 }

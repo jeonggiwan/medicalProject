@@ -1,6 +1,9 @@
 package com.springbook.biz.member;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,17 @@ public class MemberDAOMybatis {
 
     public void removeExpiredRefreshTokens() {
         mybatis.delete("MemberDAO.removeExpiredRefreshTokens");
+    }
+    
+    public List<MemberVO> getAllMembers() {
+        return mybatis.selectList("MemberDAO.getAllMembers");
+    }
+
+    public List<MemberVO> searchMembers(String id, String name) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("name", name);
+        return mybatis.selectList("MemberDAO.searchMembers", params);
     }
     
 }

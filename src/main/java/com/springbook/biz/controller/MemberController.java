@@ -1,5 +1,6 @@
 package com.springbook.biz.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.springbook.biz.VO.MemberVO;
 import com.springbook.biz.member.MemberService;
 
 
@@ -45,6 +47,18 @@ public class MemberController {
         return memberService.logout(request, response);
     }
     
-    
+    @GetMapping("/memberList")
+    public String getMemberList(Model model) {
+        List<MemberVO> memberList = memberService.getAllMembers();
+        model.addAttribute("memberList", memberList);
+        return "memberDetail";
+    }
+
+    @GetMapping("/searchMembers")
+    @ResponseBody
+    public List<MemberVO> searchMembers(@RequestParam(required = false) String id, 
+                                        @RequestParam(required = false) String name) {
+        return memberService.searchMembers(id, name);
+    }
  
 }
