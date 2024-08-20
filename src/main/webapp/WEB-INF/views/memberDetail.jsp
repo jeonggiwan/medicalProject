@@ -10,6 +10,7 @@
 </head>
 <body>
     <div class="container">
+        <button class="back-button" onclick="history.back()">뒤로 가기</button>
         <h1>회원 목록</h1>
         <div class="search-section">
             <input type="text" id="memberId" placeholder="아이디" class="search-input">

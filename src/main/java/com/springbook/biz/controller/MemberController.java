@@ -6,11 +6,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -60,5 +62,20 @@ public class MemberController {
                                         @RequestParam(required = false) String name) {
         return memberService.searchMembers(id, name);
     }
- 
+    
+    @GetMapping("/sign")
+    public String signPage() {
+        return "sign";
+    }
+
+    @PostMapping("/sign")
+    @ResponseBody
+    public ResponseEntity<String> signUp(@RequestBody MemberVO memberVO) {
+        try {
+            memberService.signUp(memberVO);
+            return ResponseEntity.ok("회원가입이 완료되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
 }

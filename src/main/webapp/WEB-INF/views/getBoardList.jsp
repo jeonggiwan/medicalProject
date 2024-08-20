@@ -52,7 +52,7 @@
                             <a href="getBoard?seq=${board.seq}" class="table-link">${board.title}</a>
                         </td>
                         <td class="table-cell">${board.writer}</td>
-                        <td class="table-cell">
+                        <td class="table-header">
                             <fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${board.regDate}"/>
                         </td>
                         <td class="table-cell">${board.cnt}</td>
@@ -61,8 +61,15 @@
             </tbody>
         </table>
         
-        <div class="write-button">
-            <a href="insertBoardPage.jsp" class="write-link">글쓰기</a>
+        <c:if test="${sessionScope.member.role eq 'ADMIN'}">
+            <div class="write-button">
+                <a href="insertBoardPage.jsp" class="write-link">글쓰기</a>
+            </div>
+        </c:if>
+        
+        <!-- index로 돌아가는 버튼 추가 -->
+        <div class="return-button">
+            <a href="/" class="return-link">메인으로 돌아가기</a>
         </div>
     </div>
 </body>
