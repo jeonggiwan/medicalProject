@@ -1,65 +1,53 @@
 package com.springbook.biz.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.springbook.biz.member.MemberService;
+import com.springbook.biz.member.MemberDAOMybatis;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
+    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberDAOMybatis memberDAO;
 
-    @Autowired
-    private MemberService memberService;
-    
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-    
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, MemberDAOMybatis memberDAO) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.memberDAO = memberDAO;
     }
-    
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .httpBasic().disable()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/login","/logout","/public/**").permitAll()
-            .anyRequest().authenticated()
-            .and()  
-            .logout().disable()  
-            .exceptionHandling()
-            .authenticationEntryPoint((request, response, authException) -> 
-                response.sendRedirect("/login"))
+                .antMatchers("/login", "/logout", "/refreshToken", "/validateToken", "/public/**", "/CSS/**", "/js/**", "/images/**").permitAll()
+                .anyRequest().authenticated()
             .and()
+            .exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) -> 
+                    response.sendRedirect("/login"))
+            .and()
+            .logout().disable()  // 기본 로그아웃 기능 비활성화
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-
+        
+        return http.build();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/CSS/**", "/js/**", "/images/**");
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(memberService).passwordEncoder(passwordEncoder());
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean

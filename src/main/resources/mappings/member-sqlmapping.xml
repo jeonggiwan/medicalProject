@@ -3,12 +3,85 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="MemberDAO">
 	<select id="login" parameterType="member" resultType="member">
-		SELECT ID, PASSWORD
+		SELECT ID,
+		PASSWORD
 		FROM Member
-		WHERE ID = #{id} AND PASSWORD = #{password}
+		WHERE ID = #{id}
 	</select>
 
 	<select id="getMemberById" resultType="member">
-		SELECT * FROM MEMBER WHERE ID = #{id}
+		SELECT * FROM MEMBER WHERE
+		ID = #{id}
 	</select>
+
+	<update id="saveRefreshToken" parameterType="member">
+		UPDATE MEMBER SET
+		REFRESH_TOKEN = #{refreshToken}, REFRESH_TOKEN_EXPIRY_DATE
+		=
+		#{refreshTokenExpiryDate} WHERE ID = #{id}
+	</update>
+
+	<update id="updateRefreshToken" parameterType="member">
+		UPDATE MEMBER SET
+		REFRESH_TOKEN = #{refreshToken}, REFRESH_TOKEN_EXPIRY_DATE
+		=
+		#{refreshTokenExpiryDate} WHERE ID = #{id}
+	</update>
+
+	<update id="removeRefreshToken" parameterType="string">
+		UPDATE MEMBER SET
+		REFRESH_TOKEN = NULL, REFRESH_TOKEN_EXPIRY_DATE = NULL
+		WHERE ID = #{id}
+	</update>
+
+	<select id="getRefreshTokenByUserId" parameterType="string"
+		resultType="member">
+		SELECT ID, REFRESH_TOKEN as refreshToken,
+		REFRESH_TOKEN_EXPIRY_DATE as
+		refreshTokenExpiryDate
+		FROM MEMBER
+		WHERE ID
+		= #{id}
+	</select>
+	<delete id="removeExpiredRefreshTokens">
+		UPDATE MEMBER SET REFRESH_TOKEN = NULL,
+		REFRESH_TOKEN_EXPIRY_DATE = NULL
+		WHERE REFRESH_TOKEN_EXPIRY_DATE IS NOT
+		NULL AND
+		REFRESH_TOKEN_EXPIRY_DATE &lt; CURRENT_TIMESTAMP
+	</delete>
+
+	<select id="getAllMembers" resultType="member">
+		SELECT * FROM MEMBER
+	</select>
+
+	<select id="searchMembers" parameterType="map"
+		resultType="member">
+		SELECT * FROM MEMBER
+		<where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				<choose>
+					<when test="searchType == 'id'">
+						AND ID LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchType == 'name'">
+						AND NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<otherwise>
+						AND (ID LIKE CONCAT('%', #{searchKeyword}, '%') OR NAME LIKE
+						CONCAT('%', #{searchKeyword}, '%'))
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</select>
+
+    <delete id="deleteMembers" parameterType="java.util.List">
+        DELETE FROM MEMBER 
+        WHERE ID IN 
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND ROLE != 'ADMIN'
+    </delete>
 </mapper>

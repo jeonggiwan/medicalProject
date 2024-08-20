@@ -1,6 +1,8 @@
 package com.springbook.biz.board.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.springbook.biz.VO.BoardVO;
+import com.springbook.biz.VO.MemberVO;
 
 @Repository
 public class BoardDAOMybatis{
@@ -43,4 +46,15 @@ public class BoardDAOMybatis{
 		System.out.println("===> Mybatis로 getBoardList() 기능 처리");
 		return mybatis.selectList("BoardDAO.getBoardList", vo);	
 	}
+
+    public List<MemberVO> getAllMembers() {
+        return mybatis.selectList("MemberDAO.getAllMembers");
+    }
+
+    public List<MemberVO> searchMembers(String id, String name) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("name", name);
+        return mybatis.selectList("MemberDAO.searchMembers", params);
+    }
 }

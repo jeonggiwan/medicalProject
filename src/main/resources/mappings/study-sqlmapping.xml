@@ -3,12 +3,19 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="StudyDAO">
 	<select id="getStudyList" resultType="study">
-		SELECT * FROM PACSPLUS.STUDYTAB
+		SELECT * FROM dicom
 	</select>
-
 	<select id="getPatientHistory" resultType="study"
 		parameterType="string">
-		SELECT * FROM PACSPLUS.STUDYTAB WHERE PID = #{pid} ORDER BY STUDY_DATE DESC,
-		STUDY_TIME DESC
+		SELECT * FROM dicom WHERE PID = #{pid} ORDER BY
+		STUDYDATE DESC,
+		STUDYTIME DESC
+	</select>
+
+	<select id="getStudyDetails" resultType="study"
+		parameterType="study">
+		SELECT * FROM dicom
+		WHERE PID = #{pid}
+		AND STUDYDATE = #{studyDate}
 	</select>
 </mapper>
