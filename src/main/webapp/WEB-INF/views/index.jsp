@@ -17,6 +17,40 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link href="${pageContext.request.contextPath}/CSS/index.css"
     rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script>
+    var socket = new SockJS('/notification');
+
+    socket.onmessage = function(event) {
+        showNotification(event.data);
+    };
+
+    function showNotification(message) {
+        var notification = $('<div class="notification">' + message + '</div>');
+        $('body').append(notification);
+        
+        notification.css({
+            'position': 'fixed',
+            'bottom': '20px',
+            'right': '20px',
+            'background-color': '#f8f9fa',
+            'border': '1px solid #dee2e6',
+            'padding': '10px',
+            'border-radius': '5px',
+            'cursor': 'pointer'
+        });
+
+        notification.click(function() {
+            window.location.href = 'getBoard.do';
+        });
+
+        setTimeout(function() {
+            notification.fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 10000);
+    }
+</script>
 </head>
 
 <body class="bg-gray-100 text-gray-900">

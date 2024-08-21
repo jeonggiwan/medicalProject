@@ -37,4 +37,10 @@ public class BoardServiceImpl implements BoardService{
 	public List<BoardVO> getBoardList(BoardVO vo) {
 		return boardDAO.getBoardList(vo);
 	}
+
+	@Override
+	public void insertBoard(BoardVO vo) {
+		boardDAO.insertBoard(vo);
+		// 알림 전송 로직 추가
+}
 }
