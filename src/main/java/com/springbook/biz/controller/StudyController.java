@@ -80,7 +80,13 @@ public class StudyController {
     }
     
     @PostMapping("/insertBoard")
-    public String insertBoard(BoardVO vo) throws IOException {
+    public String insertBoard(@ModelAttribute("board") BoardVO vo) throws IOException {
+        // title 값이 제대로 들어왔는지 확인
+    	System.out.println(vo);
+        if (vo.getTitle() == null || vo.getTitle().trim().isEmpty()) {
+            // title 값이 null이거나 비어있을 때 처리
+            return "redirect:insertBoardPage";
+        }
         boardService.insertBoard(vo);
         return "redirect:getBoardList";
     }

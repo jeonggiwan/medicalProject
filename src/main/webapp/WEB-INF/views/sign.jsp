@@ -72,6 +72,10 @@ $(document).ready(function() {
                 <input type="password" id="password" class="form-input" placeholder="패스워드">
             </div>
             <div class="form-group">
+                <label for="passwordConfirm" class="form-label">패스워드 확인</label>
+                <input type="password" id="passwordConfirm" class="form-input" placeholder="패스워드 확인">
+            </div>
+            <div class="form-group">
                 <label for="name" class="form-label">이름</label>
                 <input type="text" id="name" class="form-input" placeholder="이름">
             </div>

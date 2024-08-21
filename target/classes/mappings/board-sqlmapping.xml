@@ -4,32 +4,24 @@
 
 <mapper namespace="BoardDAO">
 
-	<insert id="insertBoard" parameterType="board">
-		<![CDATA[
-			INSERT INTO BOARD(TITLE, WRITER, CONTENT)
-			VALUES(#{title}, #{writer}, #{content})
-		]]>
+	<insert id="insertBoard" parameterType="com.springbook.biz.VO.BoardVO">
+		INSERT INTO BOARD(TITLE, WRITER, CONTENT)
+		VALUES(#{title}, #{writer}, #{content})
 	</insert>
 	
-	<update id="updateBoard">
-		<![CDATA[
-			UPDATE BOARD SET TITLE=#{title}, CONTENT=#{content} WHERE SEQ=#{seq}
-		]]>
+	<update id="updateBoard" parameterType="com.springbook.biz.VO.BoardVO">
+		UPDATE BOARD SET TITLE=#{title}, CONTENT=#{content} WHERE SEQ=#{seq}
 	</update>
 	
-	<delete id="deleteBoard">
-		<![CDATA[
-			DELETE FROM BOARD WHERE SEQ=#{seq}
-		]]>
+	<delete id="deleteBoard" parameterType="com.springbook.biz.VO.BoardVO">
+		DELETE FROM BOARD WHERE SEQ=#{seq}
 	</delete>
 	
-	<select id="getBoard" resultType="board">
-		<![CDATA[
-			SELECT * FROM BOARD WHERE SEQ=#{seq}
-		]]>	
+	<select id="getBoard" resultType="com.springbook.biz.VO.BoardVO">
+		SELECT * FROM BOARD WHERE SEQ=#{seq}
 	</select>
 
-	<select id="getBoardList" resultType="board">
+	<select id="getBoardList" resultType="com.springbook.biz.VO.BoardVO">
 		SELECT * 
 		FROM BOARD
 		WHERE 1 = 1
