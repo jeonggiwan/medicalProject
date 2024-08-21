@@ -32,7 +32,7 @@
         <div class="footer-links">
             <a href="<c:url value='/forgot-password'/>" class="footer-link">비밀번호 찾기</a>
             <span class="link-separator">|</span>
-            <a href="<c:url value='/signup'/>" class="footer-link">회원가입</a>
+            <a href="<c:url value='/sign'/>" class="footer-link">회원가입</a>
         </div>
     </div>
     <script>

@@ -16,8 +16,7 @@
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<link href="${pageContext.request.contextPath}/CSS/index.css"
-	rel="stylesheet">
+<link href="${pageContext.request.contextPath}/CSS/index.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 text-gray-900">
