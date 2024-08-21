@@ -20,5 +20,4 @@ public interface MemberService extends UserDetailsService {
     void deleteMembers(List<String> memberIds);
     void signUp(MemberVO memberVO) throws Exception;
     MemberVO getMemberById(String id);
-    
 }

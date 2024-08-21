@@ -11,10 +11,9 @@
 		<span id="accessTokenInfo">로그인 만료까지: <span
 			id="accessTokenExpiration"></span></span>
 		<button id="extendTokenButton" class="header-link">시간 연장</button>
-		<a href="/mypage" class="header-link">마이페이지</a> <a href="#"
-			class="header-link" id="logoutButton">로그아웃</a>
+		<a href="#" class="header-link" id="mypageButton">마이페이지</a> <a
+			href="#" class="header-link" id="logoutButton">로그아웃</a>
 		<sec:authorize access="hasRole('ROLE_ADMIN')">
-
 			<a href="#" class="header-link" id="memberManagementMenu">회원관리</a>
 		</sec:authorize>
 	</div>
@@ -96,6 +95,4 @@
 													});
 										});
 					});
-
-
 </script>

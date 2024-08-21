@@ -101,4 +101,12 @@ public class MemberController {
         return "mypage";
     }
 
+    @GetMapping("/mypage")
+    public String myPage(Model model, Principal principal) {
+        String userId = principal.getName();
+        MemberVO member = memberService.getMemberById(userId);
+        model.addAttribute("member", member);
+        return "mypage";
+    }
+    
 }

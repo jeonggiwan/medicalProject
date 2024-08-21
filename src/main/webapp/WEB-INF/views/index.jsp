@@ -201,8 +201,24 @@
         $('#saveButton').click(handleMemoSave);
         $('#memberManagementMenu').click(loadMemberManagement);
         $('#searchButton').click(searchPatients);
+        $('#mypageButton').click(loadMyPage);
     }
 
+    function loadMyPage() {
+        $.ajax({
+            url: '/mypage',
+            type: 'GET',
+            success: function(response) {
+                $('#content').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading mypage:', error);
+                alert('마이페이지 로딩 중 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    
     function handlePatientRowClick() {
         var pid = $(this).data('pid');
         var pName = $(this).data('pname');
