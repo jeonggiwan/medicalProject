@@ -17,5 +17,5 @@ public interface MemberService extends UserDetailsService {
     ResponseEntity<Void> refreshToken(HttpServletRequest request, HttpServletResponse response);
     List<MemberVO> getAllMembers();
     List<MemberVO> searchMembers(String id, String name);
-
+    void signUp(MemberVO memberVO) throws Exception;
 }

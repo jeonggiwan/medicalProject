@@ -65,4 +65,11 @@ public class MemberDAOMybatis {
         return mybatis.selectList("MemberDAO.searchMembers", params);
     }
     
+    public MemberVO getMember(String id) {
+        return mybatis.selectOne("MemberDAO.getMember", id);
+    }
+
+    public void insertMember(MemberVO memberVO) {
+        mybatis.insert("MemberDAO.insertMember", memberVO);
+    }
 }

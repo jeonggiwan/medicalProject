@@ -193,4 +193,23 @@ public class MemberServiceImpl implements MemberService {
     public List<MemberVO> searchMembers(String id, String name) {
         return memberDAO.searchMembers(id, name);
     }
+
+    public void registerMember(MemberVO memberVO) throws Exception {
+        // 아이디 중복 체크
+        if (memberDAO.getMemberById(memberVO.getId()) != null) {
+            throw new Exception("이미 존재하는 아이디입니다.");
+        }
+
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(memberVO.getPassword());
+        memberVO.setPassword(encodedPassword);
+
+        // 회원 정보 저장
+        memberDAO.insertMember(memberVO);
+    }
+
+    @Override
+    public void signUp(MemberVO memberVO) throws Exception {
+        registerMember(memberVO);
+    }
 }

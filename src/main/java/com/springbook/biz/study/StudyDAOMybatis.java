@@ -13,7 +13,7 @@ import com.springbook.biz.VO.StudyVO;
 public class StudyDAOMybatis {
     
     @Autowired
-    @Qualifier("oracleSqlSession")
+    @Qualifier("sqlSession") 
     private SqlSessionTemplate mybatis;
     
     public List<StudyVO> getStudyList() {
