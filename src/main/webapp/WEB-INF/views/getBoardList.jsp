@@ -2,6 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"  %>    
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +19,14 @@
 <body class="bg-gray-100 p-6">
     <div class="container">
         <h1 class="title">문의 게시판</h1>
+        <div class="debug-info">
+            <c:if test="${not empty sessionScope.member}">
+                <p>Member: <c:out value="${sessionScope.member}" /></p>
+                <c:if test="${not empty sessionScope.member.role}">
+                    <p>Role: <c:out value="${sessionScope.member.role}" /></p>
+                </c:if>
+            </c:if>
+        </div>
         
         <!-- 검색 시작 -->
         <form action="getBoardList" method="post" class="search-form">
@@ -60,16 +70,15 @@
                 </c:forEach>
             </tbody>
         </table>
-        
-        <c:if test="${sessionScope.member.role eq 'ADMIN'}">
-            <div class="write-button">
-                <a href="insertBoardPage.jsp" class="write-link">글쓰기</a>
-            </div>
-        </c:if>
-        
         <!-- index로 돌아가는 버튼 추가 -->
         <div class="return-button">
             <a href="/" class="return-link">메인으로 돌아가기</a>
+        </div>
+        
+        <div class="button-container">
+            <sec:authorize access="hasRole('ROLE_ADMIN')">
+                <a href="insertBoardPage" class="write-button">글쓰기</a>
+            </sec:authorize>
         </div>
     </div>
 </body>

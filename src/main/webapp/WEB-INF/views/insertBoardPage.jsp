@@ -13,7 +13,7 @@
 <body class="bg-gray-100 p-6">
     <div class="container">
         <h1 class="title">글 등록</h1>
-        <form action="insertBoard" method="post" enctype="multipart/form-data">
+        <form action="insertBoard" method="post" name="board">
             <div class="form-group">
                 <label for="title" class="form-label">제목</label>
                 <input type="text" id="title" name="title" class="form-input">
@@ -25,11 +25,6 @@
             <div class="form-group">
                 <label for="content" class="form-label">내용</label>
                 <textarea id="content" name="content" rows="6" class="form-textarea"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="uploadFile" class="form-label">업로드</label>
-                <input type="file" id="uploadFile" name="uploadFile" class="form-input">
-                <p class="file-info">선택된 파일 없음</p>
             </div>
             <div class="form-group">
                 <button type="submit" class="submit-button">새글 등록</button>
