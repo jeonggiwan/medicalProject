@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springbook.biz.VO.MemberVO;
+import com.springbook.biz.member.EmailUtil;
 import com.springbook.biz.member.MemberService;
+import com.springbook.biz.member.VerificationUtil;
 
 
 @Controller
@@ -93,6 +95,29 @@ public class MemberController {
         }
     }
 
+    @PostMapping("/sendVerification")
+    @ResponseBody
+    public ResponseEntity<String> sendVerification(@RequestParam String email) {
+        System.out.println(email);
+    	String code = VerificationUtil.generateVerificationCode();
+        VerificationUtil.saveVerificationCode(email, code);
+        System.out.println(code);
+
+        try {
+            EmailUtil.sendEmail(email, "회원가입 인증코드", "인증코드: " + code);
+            return ResponseEntity.ok("success");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("error");
+        }
+    }
+
+    @PostMapping("/verifyCode")
+    @ResponseBody
+    public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String code) {
+        boolean isVerified = VerificationUtil.verifyCode(email, code);
+        return ResponseEntity.ok(isVerified ? "success" : "failure");
+    }
+    
     @GetMapping("/mypage")
     public String myPage(Model model, Principal principal) {
         String userId = principal.getName();

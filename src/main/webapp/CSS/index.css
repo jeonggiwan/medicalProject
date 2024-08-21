@@ -296,3 +296,30 @@ body {
     max-width: none !important;
     flex-basis: 14.2857% !important;
 }
+.mypage-container {
+    width: 800px;
+    margin: 0 auto;
+}
+
+.mypage-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.mypage-label {
+    width: 150px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.mypage-value {
+    flex: 1;
+    font-size: 1.2rem;
+}
+
+.search-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}

@@ -209,6 +209,9 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberVO.getPassword());
         memberVO.setPassword(encodedPassword);
 
+        // 기본 역할 설정
+        memberVO.setRole(UserRole.USER);
+
         // 회원 정보 저장
         memberDAO.insertMember(memberVO);
     }
