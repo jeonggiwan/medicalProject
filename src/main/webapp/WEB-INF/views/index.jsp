@@ -156,6 +156,10 @@
 		</div>
 	</div>
 	<script>
+
+    let currentPage = 1;
+    let totalPages = 1;
+    
     $(document).ready(function () {
         setupAjaxInterceptor();
         setupEventListeners();
@@ -433,8 +437,6 @@
         });
     }
 
-    let currentPage = 1;
-    let totalPages = 1;
 
     function searchPatients() {
         var searchKeyword = $('#searchKeyword').val();

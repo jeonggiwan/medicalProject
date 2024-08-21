@@ -1,65 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<<<<<<< HEAD
-=======
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원 목록</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/memberDetail.css">
-</head>
-<body>
-    <div class="container">
-        <button class="back-button" onclick="history.back()">뒤로 가기</button>
-        <h1>회원 목록</h1>
-        <div class="search-section">
-            <input type="text" id="memberId" placeholder="아이디" class="search-input">
-            <input type="text" id="memberName" placeholder="이름" class="search-input">
-            <button class="search-button" onclick="searchMembers()">검색</button>
-        </div>
-        <div class="table-container">
-            <table class="member-table">
-                <thead>
-                    <tr>
-                        <th>선택</th>
-                        <th>회원 ID</th>
-                        <th>이름</th>
-                        <th>분야</th>
-                        <th>직업</th>
-                        <th>전화번호</th>
-                        <th>이메일</th>
-                        <th>권한</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="member" items="${memberList}">
-                        <tr>
-                            <td><input type="checkbox" name="selectedMember" value="${member.id}"></td>
-                            <td>${member.id}</td>
-                            <td>${member.name}</td>
-                            <td>${member.specialty}</td>
-                            <td>${member.job}</td>
-                            <td>${member.phoneNumber}</td>
-                            <td>${member.email}</td>
-                            <td>${member.role}</td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-        </div>
-        <div class="pagination">
-            <!-- 페이지네이션 버튼들을 여기에 추가 -->
-        </div>
-    </div>
-    
-    <script>
-    function updateMemberTable(members) {
-        var tbody = $('#memberTable tbody');
-        tbody.empty();
->>>>>>> main
+
 
 <div class="search-section">
 	<h2 class="search-title">회원 목록</h2>
