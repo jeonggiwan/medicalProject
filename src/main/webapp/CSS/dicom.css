@@ -1,0 +1,14 @@
+/* Grid container styles */
+/* .image-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 10px; 
+    padding: 10px; 
+} */
+
+/* Image item styles */
+.image-grid-item {
+    position: relative;
+    width: 200px;
+    height: 200px; /* Adjust height as needed */
+}

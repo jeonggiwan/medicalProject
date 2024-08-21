@@ -10,7 +10,7 @@
 	</context-param>
 	<context-param>
 		<param-name>javax.servlet.jsp.jstl.fmt.timeZone</param-name>
-    	<param-value>Asia/Seoul</param-value>	
+		<param-value>Asia/Seoul</param-value>
 	</context-param>
 	<!-- Creates the Spring Container shared by all Servlets and Filters -->
 	<listener>
@@ -24,7 +24,15 @@
 			<param-value>UTF-8</param-value>
 		</init-param>
 	</filter>
+	<filter>
+		<filter-name>multipartFilter</filter-name>
+		<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
+	</filter>
 
+	<filter-mapping>
+		<filter-name>multipartFilter</filter-name>
+		<servlet-name>dispatcher</servlet-name>
+	</filter-mapping>
 	<filter-mapping>
 		<filter-name>characterEncoding</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -53,18 +61,18 @@
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>/CSS/*</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/CSS/*</url-pattern>
+	</servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>/js/*</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/js/*</url-pattern>
+	</servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>/images/*</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/images/*</url-pattern>
+	</servlet-mapping>
 </web-app>

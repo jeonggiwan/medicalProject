@@ -223,6 +223,7 @@ body {
 .pagination {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 1rem;
 }
 
@@ -236,6 +237,20 @@ body {
     font-size: 0.9rem;
 }
 
+.pagination .current-page {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #4CAF50;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+.page-info {
+    margin-left: 10px;
+    font-size: 0.9rem;
+}
 .grid-container {
     margin-top: 1rem;
     flex-grow: 1;

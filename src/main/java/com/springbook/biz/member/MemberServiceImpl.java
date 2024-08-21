@@ -190,7 +190,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberVO> searchMembers(String id, String name) {
-        return memberDAO.searchMembers(id, name);
+    public List<MemberVO> searchMembers(String searchKeyword, String searchType) {
+        return memberDAO.searchMembers(searchKeyword, searchType);
+    }
+    
+    @Override
+    public void deleteMembers(List<String> memberIds) {
+        memberDAO.deleteMembers(memberIds);
     }
 }

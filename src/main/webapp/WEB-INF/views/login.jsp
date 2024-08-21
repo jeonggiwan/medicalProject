@@ -29,8 +29,10 @@
             </div>
             <button type="submit" class="login-button">로그인</button>
         </form>
-        <div class="forgot-password">
-            <a href="<c:url value='/forgot-password'/>" class="forgot-password-link">비밀번호 찾기</a>
+        <div class="footer-links">
+            <a href="<c:url value='/forgot-password'/>" class="footer-link">비밀번호 찾기</a>
+            <span class="link-separator">|</span>
+            <a href="<c:url value='/signup'/>" class="footer-link">회원가입</a>
         </div>
     </div>
     <script>
@@ -59,11 +61,6 @@
                         alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
                     }
                 });
-            });
-
-            // 페이지 로드 시 쿠키 확인
-            $(document).ready(function() {
-                console.log('Current cookies:', document.cookie);
             });
         });
     </script>

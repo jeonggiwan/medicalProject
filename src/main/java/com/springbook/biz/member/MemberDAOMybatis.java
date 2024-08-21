@@ -15,7 +15,6 @@ import com.springbook.biz.VO.MemberVO;
 @Repository
 public class MemberDAOMybatis {
     @Autowired
-    @Qualifier("sqlSession") 
     private SqlSessionTemplate mybatis;
     
     public MemberVO login(MemberVO vo) {
@@ -58,11 +57,13 @@ public class MemberDAOMybatis {
         return mybatis.selectList("MemberDAO.getAllMembers");
     }
 
-    public List<MemberVO> searchMembers(String id, String name) {
+    public List<MemberVO> searchMembers(String searchKeyword, String searchType) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-        params.put("name", name);
+        params.put("searchKeyword", searchKeyword);
+        params.put("searchType", searchType);
         return mybatis.selectList("MemberDAO.searchMembers", params);
     }
-    
+    public void deleteMembers(List<String> memberIds) {
+        mybatis.delete("MemberDAO.deleteMembers", memberIds);
+    }
 }

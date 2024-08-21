@@ -166,8 +166,16 @@
         setupAjaxInterceptor();
         setupEventListeners();
         initializeCalendar();
+        
     });
-
+    // 더블클릭 이벤트 리스너 수정
+    $('#patientTable').on('dblclick', '.patient-row', function() {
+        var pid = $(this).find('td:eq(1)').text(); // 환자 ID
+        var studyDate = $(this).find('td:eq(3)').text(); // 검사 날짜
+        
+        // 뷰어로 이동
+        window.location.href = '/viewer?pid=' + pid + '&studyDate=' + studyDate;
+    });
     function setupAjaxInterceptor() {
         $.ajaxSetup({
             beforeSend: function (xhr) {

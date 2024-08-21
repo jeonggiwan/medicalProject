@@ -18,13 +18,6 @@
         <property name="password" value="${jdbc.password}" />
     </bean>
 
-    <!-- Oracle DataSource -->
-    <bean id="oracleDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${oracle.driverClassName}" />
-        <property name="url" value="${oracle.url}" />
-        <property name="username" value="${oracle.username}" />
-        <property name="password" value="${oracle.password}" />
-    </bean>
 
     <!-- MySQL SqlSessionFactory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -33,22 +26,11 @@
         <property name="mapperLocations" value="classpath:/mappings/*-sqlmapping.xml" />
     </bean>
 
-    <!-- Oracle SqlSessionFactory -->
-    <bean id="oracleSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="oracleDataSource" />
-        <property name="configLocation" value="classpath:/sql-map-config.xml" />
-        <property name="mapperLocations" value="classpath:/mappings/*-oraclemapping.xml" />
-    </bean>
 
     <!-- MySQL SqlSession -->
     <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
         <constructor-arg index="0" ref="sqlSessionFactory" />
     </bean>
 
-    <!-- Oracle SqlSession -->
-    <bean id="oracleSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
-        <constructor-arg index="0" ref="oracleSqlSessionFactory" />
-    </bean>
-    
    	<task:annotation-driven/>
 </beans>
