@@ -91,4 +91,5 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
+
 }

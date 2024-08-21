@@ -2,9 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="StudyDAO">
+
 	<select id="getStudyList" resultType="study">
 		SELECT * FROM dicom
 	</select>
+	
 	<select id="getPatientHistory" resultType="study"
 		parameterType="string">
 		SELECT * FROM dicom WHERE PID = #{pid} ORDER BY

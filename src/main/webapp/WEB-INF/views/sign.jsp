@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="kr">
+=======
+<html lang="en">
+>>>>>>> main
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,6 +22,7 @@ $(document).ready(function() {
     $("#signForm").submit(function(event) {
         event.preventDefault();
         
+<<<<<<< HEAD
         var password = $("#password").val();
         var passwordConfirm = $("#passwordConfirm").val();
         
@@ -29,6 +34,11 @@ $(document).ready(function() {
         var formData = {
             id: $("#id").val(),
             password: password,
+=======
+        var formData = {
+            id: $("#id").val(),
+            password: $("#password").val(),
+>>>>>>> main
             name: $("#name").val(),
             role: $("#role").val().toUpperCase(), // 대문자로 변환
             specialty: $("#specialty").val(),
@@ -56,6 +66,10 @@ $(document).ready(function() {
 </head>
 <body class="page-container">
     <div class="form-container">
+<<<<<<< HEAD
+=======
+        <button class="back-button" onclick="history.back()">뒤로</button>
+>>>>>>> main
         <h1 class="form-title">회원추가</h1>
         <form id="signForm">
             <div class="form-group">
@@ -67,10 +81,13 @@ $(document).ready(function() {
                 <input type="password" id="password" class="form-input" placeholder="패스워드">
             </div>
             <div class="form-group">
+<<<<<<< HEAD
                 <label for="passwordConfirm" class="form-label">패스워드 확인</label>
                 <input type="password" id="passwordConfirm" class="form-input" placeholder="패스워드 확인">
             </div>
             <div class="form-group">
+=======
+>>>>>>> main
                 <label for="name" class="form-label">이름</label>
                 <input type="text" id="name" class="form-input" placeholder="이름">
             </div>
