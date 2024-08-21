@@ -92,6 +92,14 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
+    
+    @GetMapping("/mypage")
+    public String myPage(Model model, Principal principal) {
+        String userId = principal.getName();
+        MemberVO member = memberService.getMemberById(userId);
+        model.addAttribute("member", member);
+        return "mypage";
+    }
 
     @GetMapping("/mypage")
     public String myPage(Model model, Principal principal) {

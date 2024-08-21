@@ -222,5 +222,3 @@ public class MemberServiceImpl implements MemberService {
     public MemberVO getMemberById(String id) {
         return memberDAO.getMemberById(id);
     }
-    
-}

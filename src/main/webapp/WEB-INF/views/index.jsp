@@ -156,6 +156,10 @@
 		</div>
 	</div>
 	<script>
+
+    let currentPage = 1;
+    let totalPages = 1;
+    
     $(document).ready(function () {
         setupAjaxInterceptor();
         setupEventListeners();
@@ -253,7 +257,7 @@
             type: 'GET',
             data: {
                 searchKeyword: searchKeyword,
-                searchType: searchType
+                searchType: searchTy`pe
             },
             success: function(response) {
                 updatePatientTable(response);
@@ -449,8 +453,6 @@
         });
     }
 
-    let currentPage = 1;
-    let totalPages = 1;
 
     function searchPatients() {
         var searchKeyword = $('#searchKeyword').val();
