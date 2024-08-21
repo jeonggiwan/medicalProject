@@ -1,7 +1,9 @@
 package com.springbook.biz.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,8 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.springbook.biz.VO.BoardVO;
 import com.springbook.biz.VO.StudyVO;
 import com.springbook.biz.board.impl.BoardService;
-import com.springbook.biz.security.JwtTokenProvider;
-import com.springbook.biz.security.JwtTokenProvider;
 import com.springbook.biz.security.JwtTokenProvider;
 import com.springbook.biz.study.StudyService;
 
@@ -112,4 +112,31 @@ public class StudyController {
         return "getBoardList";
     }
     
+    @GetMapping("/searchPatients")
+    @ResponseBody
+    public Map<String, Object> searchPatients(@RequestParam String searchKeyword, 
+                                              @RequestParam String searchType,
+                                              @RequestParam(defaultValue = "1") int page,
+                                              @RequestParam(defaultValue = "6") int pageSize) {
+        List<StudyVO> patients;
+        if (searchType.equals("pid")) {
+            patients = studyService.searchPatientsByPid(searchKeyword);
+        } else {
+            patients = studyService.searchPatientsByName(searchKeyword);
+        }
+
+        int totalPatients = patients.size();
+        int totalPages = (int) Math.ceil((double) totalPatients / pageSize);
+
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalPatients);
+        List<StudyVO> pagedPatients = patients.subList(start, end);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("patients", pagedPatients);
+        result.put("currentPage", page);
+        result.put("totalPages", totalPages);
+
+        return result;
+    }
 }

@@ -28,4 +28,12 @@ public class StudyDAOMybatis {
         params.setStudyDate(studyDate);
         return mybatis.selectOne("StudyDAO.getStudyDetails", params);
     }
+    
+    public List<StudyVO> searchPatientsByPid(String pid) {
+        return mybatis.selectList("StudyDAO.searchPatientsByPid", pid);
+    }
+
+    public List<StudyVO> searchPatientsByName(String name) {
+        return mybatis.selectList("StudyDAO.searchPatientsByName", name);
+    }
 }

@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,158 +11,152 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-    rel="stylesheet">
+	href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+	rel="stylesheet">
 <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link href="${pageContext.request.contextPath}/CSS/index.css"
-    rel="stylesheet">
+	rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 text-gray-900">
-    <div class="container">
-        <!-- Main Content -->
-        <div class="main-content">
-            <jsp:include page="menu.jsp" />
-            <div id="content" class="content">
-                <div class="search-section">
-                    <h2 class="search-title">검색</h2>
-                    <div class="search-inputs">
-                        <input type="text" placeholder="환자 아이디" class="search-input">
-                        <input type="text" placeholder="환자 이름" class="search-input">
-                        <select class="search-input">
-                            <option>판독 상태</option>
-                        </select>
-                    </div>
-                    <div class="search-buttons">
-                        <button class="search-button">전체</button>
-                        <button class="search-button">1일</button>
-                        <button class="search-button">3일</button>
-                        <button class="search-button">1주일</button>
-                        <button class="search-button">1개월</button>
-                        <button class="search-button">3개월</button>
-                        <button class="search-button">설정</button>
-                        <button class="search-button search-button-red">검색</button>
-                    </div>
-                    <div class="table-container">
-                        <table class="table" id="patientTable">
-                            <colgroup>
-                                <col class="col-checkbox">
-                                <col class="col-id">
-                                <col class="col-name">
-                                <col class="col-date">
-                                <col class="col-time">
-                                <col class="col-modality">
-                                <col class="col-desc">
-                                <col class="col-series">
-                                <col class="col-images">
-                            </colgroup>
-                            <thead class="table-header">
-                                <tr>
-                                    <th class="table-cell">선택</th>
-                                    <th class="table-cell">환자 ID</th>
-                                    <th class="table-cell">환자 이름</th>
-                                    <th class="table-cell">검사 날짜</th>
-                                    <th class="table-cell">검사 시간</th>
-                                    <th class="table-cell">모달리티</th>
-                                    <th class="table-cell">검사 설명</th>
-                                    <th class="table-cell">시리즈 수</th>
-                                    <th class="table-cell">이미지 수</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="study" items="${studyList}">
-                                    <tr class="patient-row" data-pid="${study.pid}"
-                                        data-pname="${study.pName}">
-                                        <td class="table-cell text-center"><input type="checkbox"></td>
-                                        <td class="table-cell">${study.pid}</td>
-                                        <td class="table-cell">${study.pName}</td>
-                                        <td class="table-cell">${study.studyDate}</td>
-                                        <td class="table-cell">${study.studyTime}</td>
-                                        <td class="table-cell">${study.modality}</td>
-                                        <td class="table-cell">${study.studyDesc}</td>
-                                        <td class="table-cell">${study.seriesCnt}</td>
-                                        <td class="table-cell">${study.imageCnt}</td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+	<div class="container">
+		<!-- Main Content -->
+		<div class="main-content">
+			<jsp:include page="menu.jsp" />
+			<div id="content" class="content">
+				<div class="search-section">
+					<h2 class="search-title">검색</h2>
+					<div class="search-inputs">
+						<input type="text" id="searchKeyword" placeholder="검색어 입력"
+							class="search-input"> <select id="searchType"
+							class="search-input">
+							<option value="pid">환자 ID</option>
+							<option value="pName">환자 이름</option>
+						</select>
+						<button class="search-button search-button-red"
+							onclick="searchPatients()">검색</button>
+					</div>
+		
+					<div class="table-container">
+						<table class="table" id="patientTable">
+							<colgroup>
+								<col class="col-checkbox">
+								<col class="col-id">
+								<col class="col-name">
+								<col class="col-date">
+								<col class="col-time">
+								<col class="col-modality">
+								<col class="col-desc">
+								<col class="col-series">
+								<col class="col-images">
+							</colgroup>
+							<thead class="table-header">
+								<tr>
+									<th class="table-cell">선택</th>
+									<th class="table-cell">환자 ID</th>
+									<th class="table-cell">환자 이름</th>
+									<th class="table-cell">검사 날짜</th>
+									<th class="table-cell">검사 시간</th>
+									<th class="table-cell">모달리티</th>
+									<th class="table-cell">검사 설명</th>
+									<th class="table-cell">시리즈 수</th>
+									<th class="table-cell">이미지 수</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach var="study" items="${studyList}">
+									<tr class="patient-row" data-pid="${study.pid}"
+										data-pname="${study.pName}">
+										<td class="table-cell text-center"><input type="checkbox"></td>
+										<td class="table-cell">${study.pid}</td>
+										<td class="table-cell">${study.pName}</td>
+										<td class="table-cell">${study.studyDate}</td>
+										<td class="table-cell">${study.studyTime}</td>
+										<td class="table-cell">${study.modality}</td>
+										<td class="table-cell">${study.studyDesc}</td>
+										<td class="table-cell">${study.seriesCnt}</td>
+										<td class="table-cell">${study.imageCnt}</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</div>
+				</div>
 
-                <!-- 페이지네이션 추가 -->
-                <div class="pagination">
-                    <c:if test="${currentPage > 1}">
-                        <a href="?page=${currentPage - 1}">&laquo; 이전</a>
-                    </c:if>
+				<!-- 페이지네이션 추가 -->
+				<div class="pagination">
+					<c:if test="${currentPage > 1}">
+						<a href="?page=${currentPage - 1}">&laquo; 이전</a>
+					</c:if>
 
-                    <c:forEach begin="1" end="${totalPages}" var="i">
-                        <c:choose>
-                            <c:when test="${currentPage eq i}">
-                                <span class="current-page">${i}</span>
-                            </c:when>
-                            <c:otherwise>
-                                <a href="?page=${i}">${i}</a>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
+					<c:forEach begin="1" end="${totalPages}" var="i">
+						<c:choose>
+							<c:when test="${currentPage eq i}">
+								<span class="current-page">${i}</span>
+							</c:when>
+							<c:otherwise>
+								<a href="?page=${i}">${i}</a>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
 
-                    <c:if test="${currentPage < totalPages}">
-                        <a href="?page=${currentPage + 1}">다음 &raquo;</a>
-                    </c:if>
-                </div>
-                <div class="grid-container">
-                    <div>
-                        <h2 class="search-title">과거 검사 이력</h2>
-                        <div class="search-inputs">
-                            <input type="text" id="selectedPatientId" placeholder="환자 아이디"
-                                class="search-input" readonly> <input type="text"
-                                id="selectedPatientName" placeholder="환자 이름"
-                                class="search-input" readonly>
-                        </div>
-                        <div class="table-container">
-                            <table class="table" id="historyTable">
-                                <colgroup>
-                                    <col class="col-date">
-                                    <col class="col-time">
-                                    <col class="col-modality">
-                                    <col class="col-desc">
-                                    <col class="col-series">
-                                    <col class="col-images">
-                                </colgroup>
-                                <thead class="table-header">
-                                    <tr>
-                                        <th class="table-cell">검사 날짜</th>
-                                        <th class="table-cell">검사 시간</th>
-                                        <th class="table-cell">모달리티</th>
-                                        <th class="table-cell">검사 설명</th>
-                                        <th class="table-cell">시리즈</th>
-                                        <th class="table-cell">이미지</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- 동적으로 채워질 내용 -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="sidebar">
-            <h1 class="sidebar-title">일정</h1>
-            <div class="calendar-container">
-                <div id="calendar" class="calendar"></div>
-            </div>
-            <button id="saveButton" class="save-button">저장</button>
-            <div class="memo-container">
-                <textarea id="memoTextarea" class="memo-textarea"
-                    placeholder="메모를 입력하세요..."></textarea>
-            </div>
-        </div>
-    </div>
-    <script>
+					<c:if test="${currentPage < totalPages}">
+						<a href="?page=${currentPage + 1}">다음 &raquo;</a>
+					</c:if>
+				</div>
+				<div class="grid-container">
+					<div>
+						<h2 class="search-title">과거 검사 이력</h2>
+						<div class="search-inputs">
+							<input type="text" id="selectedPatientId" placeholder="환자 아이디"
+								class="search-input" readonly> <input type="text"
+								id="selectedPatientName" placeholder="환자 이름"
+								class="search-input" readonly>
+						</div>
+						<div class="table-container">
+							<table class="table" id="historyTable">
+								<colgroup>
+									<col class="col-date">
+									<col class="col-time">
+									<col class="col-modality">
+									<col class="col-desc">
+									<col class="col-series">
+									<col class="col-images">
+								</colgroup>
+								<thead class="table-header">
+									<tr>
+										<th class="table-cell">검사 날짜</th>
+										<th class="table-cell">검사 시간</th>
+										<th class="table-cell">모달리티</th>
+										<th class="table-cell">검사 설명</th>
+										<th class="table-cell">시리즈</th>
+										<th class="table-cell">이미지</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!-- 동적으로 채워질 내용 -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="sidebar">
+			<h1 class="sidebar-title">일정</h1>
+			<div class="calendar-container">
+				<div id="calendar" class="calendar"></div>
+			</div>
+			<button id="saveButton" class="save-button">저장</button>
+			<div class="memo-container">
+				<textarea id="memoTextarea" class="memo-textarea"
+					placeholder="메모를 입력하세요..."></textarea>
+			</div>
+		</div>
+	</div>
+	<script>
     $(document).ready(function () {
         setupAjaxInterceptor();
         setupEventListeners();
@@ -201,8 +196,8 @@
         $('#patientTable').on('click', '.patient-row', handlePatientRowClick);
         $('#logoutButton').click(handleLogout);
         $('#saveButton').click(handleMemoSave);
-        // 회원관리 메뉴 클릭 이벤트 추가
         $('#memberManagementMenu').click(loadMemberManagement);
+        $('#searchButton').click(searchPatients);
     }
 
     function handlePatientRowClick() {
@@ -234,6 +229,46 @@
         });
     }
 
+    function searchPatients() {
+        var searchKeyword = $('#searchKeyword').val();
+        var searchType = $('#searchType').val();
+        
+        $.ajax({
+            url: '/searchPatients',
+            type: 'GET',
+            data: {
+                searchKeyword: searchKeyword,
+                searchType: searchType
+            },
+            success: function(response) {
+                updatePatientTable(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error searching patients:', error);
+                alert('환자 검색 중 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    function updatePatientTable(patients) {
+        var tbody = $('#patientTable tbody');
+        tbody.empty();
+
+        patients.forEach(function(patient) {
+            var row = $('<tr>').addClass('patient-row').attr('data-pid', patient.pid).attr('data-pname', patient.pName);
+            row.append($('<td>').addClass('table-cell text-center').append($('<input>').attr('type', 'checkbox')));
+            row.append($('<td>').addClass('table-cell').text(patient.pid));
+            row.append($('<td>').addClass('table-cell').text(patient.pName));
+            row.append($('<td>').addClass('table-cell').text(patient.studyDate));
+            row.append($('<td>').addClass('table-cell').text(patient.studyTime));
+            row.append($('<td>').addClass('table-cell').text(patient.modality));
+            row.append($('<td>').addClass('table-cell').text(patient.studyDesc));
+            row.append($('<td>').addClass('table-cell').text(patient.seriesCnt));
+            row.append($('<td>').addClass('table-cell').text(patient.imageCnt));
+            tbody.append(row);
+        });
+    }
+    
     function updateHistoryTable(historyData) {
         var tbody = $('#historyTable tbody');
         tbody.empty();
@@ -399,6 +434,55 @@
         });
     }
 
+    let currentPage = 1;
+    let totalPages = 1;
+
+    function searchPatients() {
+        var searchKeyword = $('#searchKeyword').val();
+        var searchType = $('#searchType').val();
+        
+        $.ajax({
+            url: '/searchPatients',
+            type: 'GET',
+            data: {
+                searchKeyword: searchKeyword,
+                searchType: searchType,
+                page: currentPage
+            },
+            success: function(response) {
+                updatePatientTable(response.patients);
+                updatePagination(response.currentPage, response.totalPages);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error searching patients:', error);
+                alert('환자 검색 중 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    function updatePagination(currentPage, totalPages) {
+        var paginationHtml = '';
+        if (currentPage > 1) {
+            paginationHtml += '<a href="#" onclick="changePage(' + (currentPage - 1) + ')">&laquo; 이전</a>';
+        }
+        for (var i = 1; i <= totalPages; i++) {
+            if (i === currentPage) {
+                paginationHtml += '<span class="current-page">' + i + '</span>';
+            } else {
+                paginationHtml += '<a href="#" onclick="changePage(' + i + ')">' + i + '</a>';
+            }
+        }
+        if (currentPage < totalPages) {
+            paginationHtml += '<a href="#" onclick="changePage(' + (currentPage + 1) + ')">다음 &raquo;</a>';
+        }
+        $('.pagination').html(paginationHtml);
+    }
+
+    function changePage(page) {
+        currentPage = page;
+        searchPatients();
+    }
+    
     function searchMembers() {
         var memberId = $('#memberId').val();
         var memberName = $('#memberName').val();

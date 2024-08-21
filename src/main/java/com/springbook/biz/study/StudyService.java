@@ -9,5 +9,6 @@ public interface StudyService {
     List<StudyVO> getPatientHistory(String pid);
 	StudyVO getStudyDetails(String pid, String studyDate);
     
-    
+	List<StudyVO> searchPatientsByPid(String pid);
+	List<StudyVO> searchPatientsByName(String name);
 }

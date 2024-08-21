@@ -16,6 +16,18 @@
 		parameterType="study">
 		SELECT * FROM dicom
 		WHERE PID = #{pid}
-		AND STUDYDATE = #{studyDate}
+		AND STUDYDATE =
+		#{studyDate}
+	</select>
+
+	<select id="searchPatientsByPid" resultType="study"
+		parameterType="string">
+		SELECT * FROM dicom WHERE PID LIKE CONCAT('%', #{pid}, '%')
+	</select>
+
+	<select id="searchPatientsByName" resultType="study"
+		parameterType="string">
+		SELECT * FROM dicom WHERE PNAME LIKE CONCAT('%', #{name}, '%')
 	</select>
 </mapper>
+

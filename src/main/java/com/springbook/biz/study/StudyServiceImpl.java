@@ -28,5 +28,13 @@ public class StudyServiceImpl implements StudyService {
         return studyDAO.getStudyDetails(pid, studyDate);
     }
 
+    @Override
+    public List<StudyVO> searchPatientsByPid(String pid) {
+        return studyDAO.searchPatientsByPid(pid);
+    }
 
+    @Override
+    public List<StudyVO> searchPatientsByName(String name) {
+        return studyDAO.searchPatientsByName(name);
+    }
 }

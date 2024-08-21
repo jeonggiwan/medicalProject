@@ -19,7 +19,7 @@ public class TokenCleanupScheduler {
         logger.info("TokenCleanupScheduler initialized");
     }
 
-    @Scheduled(cron = "0 1 11 * * ?") // 매일 오전 10시 33분에 실행
+    @Scheduled(cron = "0 1 11 * * ?") // 매일 오전 11시 1분에 실행
     public void cleanupExpiredTokens() {
         logger.info("Cleaning up expired tokens at " + new Date());
         memberDAO.removeExpiredRefreshTokens();

@@ -10,7 +10,7 @@
 		<span id="accessTokenInfo">로그인 만료까지: <span
 			id="accessTokenExpiration"></span></span>
 		<button id="extendTokenButton" class="header-link">시간 연장</button>
-		<a href="#" class="header-link">마이페이지</a> <a href="#"
+		<a href="/mypage" class="header-link">마이페이지</a> <a href="#"
 			class="header-link" id="logoutButton">로그아웃</a>
 		<sec:authorize access="hasRole('ROLE_ADMIN')">
 			<a href="#" class="header-link" id="memberManagementMenu">회원관리</a>
@@ -74,7 +74,7 @@
 														success : function(
 																response) {
 															updateAccessTokenInfo();
-															alert('토큰이 연장되었습니다.');
+															alert('시간이 연장되었습니다.');
 														},
 														error : function(xhr,
 																status, error) {
@@ -88,7 +88,7 @@
 																alert('세션이 만료되었습니다. 다시 로그인해주세요.');
 																window.location.href = '/login';
 															} else {
-																alert('토큰 연장에 실패했습니다. 페이지를 새로고침하거나 다시 로그인해주세요.');
+																alert('시간 연장에 실패했습니다. 페이지를 새로고침하거나 다시 로그인해주세요.');
 															}
 														}
 													});
