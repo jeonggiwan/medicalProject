@@ -22,4 +22,11 @@ public class StudyServiceImpl implements StudyService {
     public List<StudyVO> getPatientHistory(String pid) {
         return studyDAO.getPatientHistory(pid);
     }
+
+    @Override
+    public StudyVO getStudyDetails(String pid, String studyDate) {
+        return studyDAO.getStudyDetails(pid, studyDate);
+    }
+
+
 }

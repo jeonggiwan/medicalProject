@@ -10,7 +10,6 @@ import com.springbook.biz.VO.ScheduleVO;
 @Repository
 public class ScheduleDAOMybatis {
     @Autowired
-	@Qualifier("sqlSession")
     private SqlSessionTemplate mybatis;
 
     public void insertSchedule(ScheduleVO vo) {

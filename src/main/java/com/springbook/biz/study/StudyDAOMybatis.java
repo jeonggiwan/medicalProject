@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.springbook.biz.VO.StudyVO;
@@ -13,7 +12,6 @@ import com.springbook.biz.VO.StudyVO;
 public class StudyDAOMybatis {
     
     @Autowired
-    @Qualifier("oracleSqlSession")
     private SqlSessionTemplate mybatis;
     
     public List<StudyVO> getStudyList() {
@@ -22,5 +20,12 @@ public class StudyDAOMybatis {
     
     public List<StudyVO> getPatientHistory(String pid) {
         return mybatis.selectList("StudyDAO.getPatientHistory", pid);
+    }
+
+    public StudyVO getStudyDetails(String pid, String studyDate) {
+        StudyVO params = new StudyVO();
+        params.setPid(pid);
+        params.setStudyDate(studyDate);
+        return mybatis.selectOne("StudyDAO.getStudyDetails", params);
     }
 }

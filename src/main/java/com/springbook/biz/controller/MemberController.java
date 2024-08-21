@@ -6,11 +6,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -53,12 +55,25 @@ public class MemberController {
         model.addAttribute("memberList", memberList);
         return "memberDetail";
     }
-
     @GetMapping("/searchMembers")
     @ResponseBody
-    public List<MemberVO> searchMembers(@RequestParam(required = false) String id, 
-                                        @RequestParam(required = false) String name) {
-        return memberService.searchMembers(id, name);
+    public List<MemberVO> searchMembers(@RequestParam(required = false) String searchKeyword,
+                                        @RequestParam(required = false) String searchType) {
+        return memberService.searchMembers(searchKeyword, searchType);
+    }
+    
+
+    @PostMapping("/deleteMembers")
+    @ResponseBody
+    public ResponseEntity<String> deleteMembers(@RequestBody List<String> memberIds) {
+        try {
+            memberService.deleteMembers(memberIds);
+            return ResponseEntity.ok("Members deleted successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error deleting members: " + e.getMessage());
+        }
     }
  
 }
