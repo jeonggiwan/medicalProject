@@ -1,5 +1,6 @@
 package com.springbook.biz.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -92,4 +93,12 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/mypage")
+    public String myPage(Model model, Principal principal) {
+        String userId = principal.getName();
+        MemberVO member = memberService.getMemberById(userId);
+        model.addAttribute("member", member);
+        return "mypage";
+    }
+    
 }

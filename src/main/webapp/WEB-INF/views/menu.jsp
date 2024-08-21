@@ -11,17 +11,11 @@
 		<span id="accessTokenInfo">로그인 만료까지: <span
 			id="accessTokenExpiration"></span></span>
 		<button id="extendTokenButton" class="header-link">시간 연장</button>
-		<a href="/mypage" class="header-link">마이페이지</a> <a href="#"
-			class="header-link" id="logoutButton">로그아웃</a>
+		<a href="#" class="header-link" id="mypageButton">마이페이지</a> <a
+			href="#" class="header-link" id="logoutButton">로그아웃</a>
 		<sec:authorize access="hasRole('ROLE_ADMIN')">
-<<<<<<< HEAD
 			<a href="#" class="header-link" id="memberManagementMenu">회원관리</a>
-=======
-			<a href="${pageContext.request.contextPath}/memberList">회원관리</a>
-			<a href="${pageContext.request.contextPath}/sign" class="header-link">회원추가</a>
->>>>>>> main
 		</sec:authorize>
-		<a href="${pageContext.request.contextPath}/getBoardList" class="header-link">공지사항</a>
 	</div>
 </header>
 <script>
@@ -101,36 +95,4 @@
 													});
 										});
 					});
-
-	// SSE 연결 및 알림 처리
-	var eventSource = new EventSource("${pageContext.request.contextPath}/sse");
-
-	eventSource.onmessage = function(event) {
-		showNotification(event.data);
-	};
-
-	function showNotification(content) {
-		var notification = $('<div class="notification">' + content + '</div>');
-		$('body').append(notification);
-		
-		setTimeout(function() {
-			notification.fadeOut('slow', function() {
-				$(this).remove();
-			});
-		}, 10000);
-	}
 </script>
-
-<style>
-	.notification {
-		position: fixed;
-		bottom: 20px;
-		right: 20px;
-		background-color: #f8f9fa;
-		border: 1px solid #dee2e6;
-		padding: 10px;
-		border-radius: 5px;
-		box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-		z-index: 1000;
-	}
-</style>
