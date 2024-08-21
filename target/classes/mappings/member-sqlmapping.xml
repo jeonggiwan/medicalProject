@@ -84,4 +84,9 @@
         </foreach>
         AND ROLE != 'ADMIN'
     </delete>
+
+	<insert id="insertMember" parameterType="member">
+        INSERT INTO MEMBER (ID, PASSWORD, NAME, ROLE, SPECIALTY, PHONENUMBER, EMAIL, JOB)
+        VALUES (#{id}, #{password}, #{name}, #{role}, #{specialty}, #{phoneNumber}, #{email}, #{job})
+    </insert>
 </mapper>

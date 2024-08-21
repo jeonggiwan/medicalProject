@@ -66,4 +66,12 @@ public class MemberDAOMybatis {
     public void deleteMembers(List<String> memberIds) {
         mybatis.delete("MemberDAO.deleteMembers", memberIds);
     }
+    
+    public MemberVO getMember(String id) {
+        return mybatis.selectOne("MemberDAO.getMember", id);
+    }
+
+    public void insertMember(MemberVO memberVO) {
+        mybatis.insert("MemberDAO.insertMember", memberVO);
+    }
 }

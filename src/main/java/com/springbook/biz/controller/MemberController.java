@@ -75,5 +75,20 @@ public class MemberController {
                                  .body("Error deleting members: " + e.getMessage());
         }
     }
- 
+    
+    @GetMapping("/sign")
+    public String signPage() {
+        return "sign";
+    }
+
+    @PostMapping("/sign")
+    @ResponseBody
+    public ResponseEntity<String> signUp(@RequestBody MemberVO memberVO) {
+        try {
+            memberService.signUp(memberVO);
+            return ResponseEntity.ok("회원가입이 완료되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
 }
