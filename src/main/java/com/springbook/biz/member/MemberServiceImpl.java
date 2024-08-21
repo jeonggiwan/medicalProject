@@ -217,4 +217,9 @@ public class MemberServiceImpl implements MemberService {
     public void signUp(MemberVO memberVO) throws Exception {
         registerMember(memberVO);
     }
+    
+    @Override
+    public MemberVO getMemberById(String id) {
+        return memberDAO.getMemberById(id);
+    }
 }

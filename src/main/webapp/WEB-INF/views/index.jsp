@@ -241,7 +241,7 @@
             type: 'GET',
             data: {
                 searchKeyword: searchKeyword,
-                searchType: searchType
+                searchType: searchTy`pe
             },
             success: function(response) {
                 updatePatientTable(response);
