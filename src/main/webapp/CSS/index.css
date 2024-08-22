@@ -172,6 +172,12 @@ body {
     color: white;
 }
 
+.search-button-blue {
+    background-color: #3B82F6;
+    color: white;
+}
+
+
 .table-container {
     width: 100%;
     overflow-x: auto;

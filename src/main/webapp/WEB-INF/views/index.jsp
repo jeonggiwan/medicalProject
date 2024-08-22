@@ -202,6 +202,7 @@
         $('#memberManagementMenu').click(loadMemberManagement);
         $('#searchButton').click(searchPatients);
         $('#mypageButton').click(loadMyPage);
+        $('#noticeLink').click(loadBoardList);
     }
 
     function loadMyPage() {
@@ -512,6 +513,22 @@
             row.append($('<td>').addClass('table-cell').text(member.email));
             row.append($('<td>').addClass('table-cell').text(member.role));
             tbody.append(row);
+        });
+    }
+    
+    function loadBoardList() {
+        $.ajax({
+            url: '/getBoardList',
+            type: 'GET',
+            success: function(response) {
+                $('#content').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading board list:', error);
+                alert('공지사항 로딩 중 오류가 발생했습니다.');
+                // 문제 해결을 위해 에러 로그를 출력합니다.
+                console.log('에러 로그:', error);
+            }
         });
     }
     </script>

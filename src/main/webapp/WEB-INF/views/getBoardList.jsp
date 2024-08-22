@@ -1,83 +1,92 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>문의 게시판</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link
-	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap"
-	rel="stylesheet">
-<link href="\CSS\getBoardList.css" rel="stylesheet" type="text/css">
 
-</head>
-<body class="bg-gray-100 p-6">
-
-	<div class="container">
-		<h1 class="title">문의 게시판</h1>
-
-		<!-- 검색 시작 -->
-		<form action="getBoardList" method="post" class="search-form">
-			<div class="search-container">
-				<select name="searchCondition" class="search-select">
-					<option value="TITLE">제목</option>
-					<option value="CONTENT">내용</option>
-				</select> <input name="searchKeyword" type="text" placeholder="Search"
-					class="search-input">
-				<svg class="search-icon" fill="none" stroke="currentColor"
-					viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-						stroke-width="2"
-						d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 16.65z"></path>
-                </svg>
-				<button type="submit" class="search-button">검색</button>
-			</div>
-		</form>
-		<!-- 검색 종료 -->
-
-		<table class="board-table">
-			<thead>
+<div class="search-section">
+	<h2 class="search-title">공지사항</h2>
+	<div class="search-inputs">
+		<input type="text" id="searchKeyword" placeholder="검색어 입력"
+			class="search-input"> <select id="searchType"
+			class="search-input">
+			<option value="TITLE">제목</option>
+			<option value="CONTENT">내용</option>
+		</select>
+		<button class="search-button" onclick="searchBoards()">검색</button>
+	</div>
+	<div class="search-buttons">
+		<sec:authorize access="hasRole('ROLE_ADMIN')">
+			<button class="search-button search-button-blue"
+				onclick="location.href='insertBoardPage'">글쓰기</button>
+		</sec:authorize>
+	</div>
+	<div class="table-container">
+		<table class="table" id="boardTable">
+			<colgroup>
+				<col class="col-seq">
+				<col class="col-title">
+				<col class="col-writer">
+				<col class="col-regDate">
+				<col class="col-cnt">
+			</colgroup>
+			<thead class="table-header">
 				<tr>
-					<th class="table-header">번호</th>
-					<th class="table-header">제목</th>
-					<th class="table-header">작성자</th>
-					<th class="table-header">등록일</th>
-					<th class="table-header">조회수</th>
+					<th class="table-cell">번호</th>
+					<th class="table-cell">제목</th>
+					<th class="table-cell">작성자</th>
+					<th class="table-cell">등록일</th>
+					<th class="table-cell">조회수</th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${boardList}" var="board">
-					<tr>
+				<c:forEach var="board" items="${boardList}">
+					<tr class="board-row">
 						<td class="table-cell">${board.seq}</td>
-						<td class="table-cell"><a href="getBoard?seq=${board.seq}"
-							class="table-link">${board.title}</a></td>
+						<td class="table-cell"><a href="getBoard?seq=${board.seq}">${board.title}</a></td>
 						<td class="table-cell">${board.writer}</td>
-						<td class="table-header"><fmt:formatDate
-								pattern="yyyy/MM/dd HH:mm:ss" value="${board.regDate}" /></td>
+						<td class="table-cell"><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${board.regDate}" /></td>
 						<td class="table-cell">${board.cnt}</td>
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
-
-
-			<sec:authorize access="hasRole('ROLE_ADMIN')">
-				<a href="insertBoardPage" class="write-link">글쓰기</a>
-			</sec:authorize>
-
-		<!-- index로 돌아가는 버튼 추가 -->
-		<div class="return-button">
-			<a href="/" class="return-link">메인으로 돌아가기</a>
-		</div>
 	</div>
+</div>
 
-</body>
-</html>
+<script>
+function searchBoards() {
+    var searchKeyword = $('#searchKeyword').val();
+    var searchType = $('#searchType').val();
+    
+    $.ajax({
+        url: '/searchBoards',
+        type: 'GET',
+        data: {
+            searchKeyword: searchKeyword,
+            searchType: searchType
+        },
+        success: function(response) {
+            updateBoardTable(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error searching boards:', error);
+            alert('공지사항 검색 중 오류가 발생했습니다.');
+        }
+    });
+}
+
+function updateBoardTable(boards) {
+    var tbody = $('#boardTable tbody');
+    tbody.empty();
+
+    boards.forEach(function(board) {
+        var row = $('<tr>').addClass('board-row');
+        row.append($('<td>').addClass('table-cell').text(board.seq));
+        row.append($('<td>').addClass('table-cell').append($('<a>').attr('href', 'getBoard?seq=' + board.seq).text(board.title)));
+        row.append($('<td>').addClass('table-cell').text(board.writer));
+        row.append($('<td>').addClass('table-cell').text(new Date(board.RegDate).toLocaleString()));
+        row.append($('<td>').addClass('table-cell').text(board.cnt));
+        tbody.append(row);
+    });
+}
+</script>
