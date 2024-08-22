@@ -15,14 +15,15 @@ import com.springbook.biz.VO.MemberVO;
 @Repository
 public class BoardDAOMybatis{
 	@Autowired
-	@Qualifier("sqlSession") 
 	private SqlSessionTemplate mybatis;
 	
-	public void insertBoard(BoardVO vo) {
-		System.out.println("===> Mybatis로 insertBoard() 기능 처리");
-		mybatis.insert("BoardDAO.insertBoard", vo);
-	}
-	
+    public void insertBoard(BoardVO vo) {
+        System.out.println("===> Mybatis로 insertBoard() 기능 처리");
+        System.out.println("Inserting board: " + vo.toString());  // Add this line
+        int result = mybatis.insert("BoardDAO.insertBoard", vo);
+        System.out.println("Insert result: " + result);  // Add this line
+    }
+    
 	public void updateBoard(BoardVO vo) {
 		System.out.println("===> Mybatis로 updateBoard() 기능 처리");
 		mybatis.update("BoardDAO.updateBoard", vo);

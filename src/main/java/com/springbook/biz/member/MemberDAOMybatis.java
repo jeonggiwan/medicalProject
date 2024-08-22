@@ -74,4 +74,12 @@ public class MemberDAOMybatis {
     public void insertMember(MemberVO memberVO) {
         mybatis.insert("MemberDAO.insertMember", memberVO);
     }
+    
+    public MemberVO getMemberByEmail(String email) {
+        return mybatis.selectOne("MemberDAO.getMemberByEmail", email);
+    }
+
+    public MemberVO getMemberByPhoneNumber(String phoneNumber) {
+        return mybatis.selectOne("MemberDAO.getMemberByPhoneNumber", phoneNumber);
+    }
 }

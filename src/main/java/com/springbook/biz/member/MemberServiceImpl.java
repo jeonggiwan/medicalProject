@@ -226,4 +226,12 @@ public class MemberServiceImpl implements MemberService {
         return memberDAO.getMemberById(id);
     }
     
+    @Override
+    public Map<String, Boolean> checkDuplication(String id, String email, String phoneNumber) {
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("idExists", memberDAO.getMemberById(id) != null);
+        result.put("emailExists", memberDAO.getMemberByEmail(email) != null);
+        result.put("phoneExists", memberDAO.getMemberByPhoneNumber(phoneNumber) != null);
+        return result;
+    }
 }

@@ -111,6 +111,18 @@ public class MemberController {
         }
     }
 
+    @PostMapping("/checkDuplication")
+    @ResponseBody
+    public ResponseEntity<Map<String, Boolean>> checkDuplication(@RequestBody Map<String, String> request) {
+        String id = request.get("id");
+        String email = request.get("email");
+        String phoneNumber = request.get("phoneNumber");
+        
+        Map<String, Boolean> result = memberService.checkDuplication(id, email, phoneNumber);
+        System.out.println("Duplication check result: " + result);
+        return ResponseEntity.ok(result);
+    }
+    
     @PostMapping("/verifyCode")
     @ResponseBody
     public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String code) {

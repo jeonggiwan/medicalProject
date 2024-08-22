@@ -76,6 +76,14 @@
 		</where>
 	</select>
 
+    <select id="getMemberByEmail" resultType="member">
+        SELECT * FROM MEMBER WHERE EMAIL = #{email}
+    </select>
+
+    <select id="getMemberByPhoneNumber" resultType="member">
+        SELECT * FROM MEMBER WHERE PHONENUMBER = #{phoneNumber}
+    </select>
+    
     <delete id="deleteMembers" parameterType="java.util.List">
         DELETE FROM MEMBER 
         WHERE ID IN 
