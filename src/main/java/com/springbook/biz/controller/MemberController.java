@@ -95,6 +95,7 @@ public class MemberController {
         }
     }
 
+
     @PostMapping("/sendVerification")
     @ResponseBody
     public ResponseEntity<String> sendVerification(@RequestParam String email) {
@@ -129,6 +130,7 @@ public class MemberController {
         boolean isVerified = VerificationUtil.verifyCode(email, code);
         return ResponseEntity.ok(isVerified ? "success" : "failure");
     }
+
     
     @GetMapping("/mypage")
     public String myPage(Model model, Principal principal) {
@@ -137,5 +139,5 @@ public class MemberController {
         model.addAttribute("member", member);
         return "mypage";
     }
-    
+
 }

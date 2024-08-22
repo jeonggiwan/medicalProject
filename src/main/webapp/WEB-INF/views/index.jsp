@@ -156,6 +156,10 @@
 		</div>
 	</div>
 	<script>
+
+    let currentPage = 1;
+    let totalPages = 1;
+    
     $(document).ready(function () {
         setupAjaxInterceptor();
         setupEventListeners();
@@ -253,10 +257,12 @@
             type: 'GET',
             data: {
                 searchKeyword: searchKeyword,
-                searchType: searchType
+                searchType: searchType,
+                page: currentPage
             },
             success: function(response) {
-                updatePatientTable(response);
+                updatePatientTable(response.patients);
+                updatePagination(response.currentPage, response.totalPages);
             },
             error: function(xhr, status, error) {
                 console.error('Error searching patients:', error);
@@ -449,31 +455,6 @@
         });
     }
 
-    let currentPage = 1;
-    let totalPages = 1;
-
-    function searchPatients() {
-        var searchKeyword = $('#searchKeyword').val();
-        var searchType = $('#searchType').val();
-        
-        $.ajax({
-            url: '/searchPatients',
-            type: 'GET',
-            data: {
-                searchKeyword: searchKeyword,
-                searchType: searchType,
-                page: currentPage
-            },
-            success: function(response) {
-                updatePatientTable(response.patients);
-                updatePagination(response.currentPage, response.totalPages);
-            },
-            error: function(xhr, status, error) {
-                console.error('Error searching patients:', error);
-                alert('환자 검색 중 오류가 발생했습니다.');
-            }
-        });
-    }
 
     function updatePagination(currentPage, totalPages) {
         var paginationHtml = '';

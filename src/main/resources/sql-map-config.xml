@@ -18,5 +18,4 @@
 		<typeAlias type="com.springbook.biz.VO.ScheduleVO"
 			alias="schedule"></typeAlias>
 	</typeAliases>
-
 </configuration>
