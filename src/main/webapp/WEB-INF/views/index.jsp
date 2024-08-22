@@ -376,11 +376,10 @@
         const memo = $('#memoTextarea').val();
 
         console.log(selectedDate);
-        const dateStr = formatDate(selectedDate);
-        
-        if (dateStr) {
+
+        if (selectedDate) {
             console.log("Saving memo for date:", selectedDate, "Content:", memo);
-            saveMemo(dateStr, memo);
+            saveMemo(selectedDate, memo);
         } else {
             alert('유효한 날짜가 선택되지 않았습니다.');
         }
@@ -409,6 +408,7 @@
             }
         });
     }
+
 
     function formatDate(date) {
         if (!(date instanceof Date) || isNaN(date)) {

@@ -33,15 +33,21 @@ public class ScheduleController {
     @ResponseBody
     public ResponseEntity<String> saveSchedule(@RequestParam String day, @RequestParam String detail, HttpServletRequest request) {
         try {
+        	
             String token = jwtTokenProvider.resolveToken(request);
-            if (token != null && jwtTokenProvider.validateToken(token)) {
+            System.out.println("11111111111111");           if (token != null && jwtTokenProvider.validateToken(token)) {
                 String id = jwtTokenProvider.getUsername(token);
                 
+                System.out.println(detail);
+                System.out.println(day);
                 SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss 'GMT'Z", Locale.ENGLISH);
                 Date date = inputFormat.parse(day);
+                System.out.println(date);
                 SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String dateStr = outputFormat.format(date);
                 
+                
+                System.out.println(dateStr);
                 ScheduleVO schedule = new ScheduleVO();
                 schedule.setId(id);
                 schedule.setDay(dateStr);
