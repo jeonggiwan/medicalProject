@@ -17,12 +17,13 @@ public class BoardDAOMybatis{
 	@Autowired
 	private SqlSessionTemplate mybatis;
 	
-    public void insertBoard(BoardVO vo) {
+	public void insertBoard(BoardVO vo) {
         System.out.println("===> Mybatis로 insertBoard() 기능 처리");
-        System.out.println("Inserting board: " + vo.toString());  // Add this line
+        System.out.println("Inserting board: " + vo.toString());
         int result = mybatis.insert("BoardDAO.insertBoard", vo);
-        System.out.println("Insert result: " + result);  // Add this line
+        System.out.println("Insert result: " + result);
     }
+
     
 	public void updateBoard(BoardVO vo) {
 		System.out.println("===> Mybatis로 updateBoard() 기능 처리");
