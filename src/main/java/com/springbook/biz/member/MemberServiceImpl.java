@@ -225,7 +225,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberVO getMemberById(String id) {
         return memberDAO.getMemberById(id);
     }
-    
+
     @Override
     public Map<String, Boolean> checkDuplication(String id, String email, String phoneNumber) {
         Map<String, Boolean> result = new HashMap<>();
@@ -235,3 +235,4 @@ public class MemberServiceImpl implements MemberService {
         return result;
     }
 }
+

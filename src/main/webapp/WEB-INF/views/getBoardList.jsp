@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
+
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,6 +20,7 @@
 
 </head>
 <body class="bg-gray-100 p-6">
+
 	<div class="container">
 		<h1 class="title">문의 게시판</h1>
 
@@ -75,5 +78,6 @@
 			<a href="/" class="return-link">메인으로 돌아가기</a>
 		</div>
 	</div>
+
 </body>
 </html>
