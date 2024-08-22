@@ -26,7 +26,7 @@
 			<jsp:include page="menu.jsp" />
 			<div id="content" class="content">
 				<div class="search-section">
-					<h2 class="search-title">검색</h2>
+					<h2 class="search-title">환자 목록</h2>
 					<div class="search-inputs">
 						<input type="text" id="searchKeyword" placeholder="검색어 입력"
 							class="search-input"> <select id="searchType"

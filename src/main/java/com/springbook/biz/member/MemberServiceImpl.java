@@ -209,6 +209,9 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberVO.getPassword());
         memberVO.setPassword(encodedPassword);
 
+        // 기본 역할 설정
+        memberVO.setRole(UserRole.USER);
+
         // 회원 정보 저장
         memberDAO.insertMember(memberVO);
     }
@@ -222,4 +225,14 @@ public class MemberServiceImpl implements MemberService {
     public MemberVO getMemberById(String id) {
         return memberDAO.getMemberById(id);
     }
+
+    @Override
+    public Map<String, Boolean> checkDuplication(String id, String email, String phoneNumber) {
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("idExists", memberDAO.getMemberById(id) != null);
+        result.put("emailExists", memberDAO.getMemberByEmail(email) != null);
+        result.put("phoneExists", memberDAO.getMemberByPhoneNumber(phoneNumber) != null);
+        return result;
+    }
 }
+
