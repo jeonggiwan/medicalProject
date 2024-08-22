@@ -13,7 +13,7 @@
 <body class="bg-gray-100 p-6">
     <div class="container">
         <h1 class="title">글 등록</h1>
-        <form action="insertBoard" method="post">
+        <form action="insertBoard" method="post" name="board">
             <div class="form-group">
                 <label for="title" class="form-label">제목</label>
                 <input type="text" id="title" name="title" class="form-input">
