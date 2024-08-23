@@ -14,15 +14,15 @@
     </div>
     <div class="search-inputs">
         <label class="search-title" style="width: 100px; display: inline-block;">내용</label>
-        <span style="margin-left: 10px;">${board.content}</span>
+    </div>
+        <div class="search-inputs">
+        <div style="border: 1px solid #ccc; padding: 10px; margin-left: 10px; display: inline-block; width: calc(100% - 20px); overflow-wrap: break-word; word-wrap: break-word; word-break: break-all; max-height: 300px; overflow-y: auto;">
+            ${board.content}
+        </div>
     </div>
     <div class="search-inputs">
         <label class="search-title" style="width: 100px; display: inline-block;">등록일</label>
         <span style="margin-left: 10px;"><fmt:formatDate pattern='yyyy/MM/dd HH:mm:ss' value='${board.regDate}'/></span>
-    </div>
-    <div class="search-inputs">
-        <label class="search-title" style="width: 100px; display: inline-block;">조회수</label>
-        <span style="margin-left: 10px;">${board.cnt}</span>
     </div>
 </div>
 <div class="search-buttons">
