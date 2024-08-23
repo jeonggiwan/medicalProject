@@ -1,83 +1,78 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>문의 게시판</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link
-	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap"
-	rel="stylesheet">
-<link href="\CSS\getBoardList.css" rel="stylesheet" type="text/css">
+<div class="search-section">
+    <h2 class="search-title">공지사항</h2>
+    <div class="table-container">
+        <table class="table" id="boardTable">
+            <colgroup>
+                <col style="width: 10%;">  <!-- 제목 -->
+                <col style="width: 50%;">  <!-- 내용 -->
+                <col style="width: 10%;">  <!-- 작성자 -->
+                <col style="width: 20%;">  <!-- 등록일 -->
+                <col style="width: 10%;">  <!-- 조회수 -->
+            </colgroup>
+            <thead class="table-header">
+                <tr>
+                    <th class="table-cell">제목</th>
+                    <th class="table-cell">내용</th>
+                    <th class="table-cell">작성자</th>
+                    <th class="table-cell">등록일</th>
+                    <th class="table-cell">조회수</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var="board" items="${boardList}">
+                    <tr class="board-row">
+                        <td class="table-cell" style="text-align: center;">
+                            <a href="#" onclick="loadBoardDetail(${board.seq}); return false;" style="color: skyblue;">${board.title}</a>
+                        </td>
+                        <td class="table-cell" style="text-align: left;">${fn:substring(board.content, 0, 50)}${fn:length(board.content) > 50 ? '...' : ''}</td>
+                        <td class="table-cell" style="text-align: center;">${board.writer}</td>
+                        <td class="table-cell" style="text-align: center;"><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${board.regDate}" /></td>
+                        <td class="table-cell" style="text-align: center;">${board.cnt}</td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+    </div>
+    <div class="search-buttons" style="text-align: right; margin-top: 10px;">
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <button class="search-button search-button-blue" onclick="loadInsertBoardPage()">글쓰기</button>
+        </sec:authorize>
+    </div>
+</div>
 
-</head>
-<body class="bg-gray-100 p-6">
+<script>
+function loadBoardDetail(seq) {
+    $.ajax({
+        url: '/getBoard',
+        type: 'GET',
+        data: { seq: seq },
+        success: function(response) {
+            $('#content').html(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('게시글 상세 정보 로딩 중 오류:', error);
+            alert('게시글 로딩 중 오류가 발생했습니다.');
+        }
+    });
+}
 
-	<div class="container">
-		<h1 class="title">문의 게시판</h1>
-
-		<!-- 검색 시작 -->
-		<form action="getBoardList" method="post" class="search-form">
-			<div class="search-container">
-				<select name="searchCondition" class="search-select">
-					<option value="TITLE">제목</option>
-					<option value="CONTENT">내용</option>
-				</select> <input name="searchKeyword" type="text" placeholder="Search"
-					class="search-input">
-				<svg class="search-icon" fill="none" stroke="currentColor"
-					viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-						stroke-width="2"
-						d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 16.65z"></path>
-                </svg>
-				<button type="submit" class="search-button">검색</button>
-			</div>
-		</form>
-		<!-- 검색 종료 -->
-
-		<table class="board-table">
-			<thead>
-				<tr>
-					<th class="table-header">번호</th>
-					<th class="table-header">제목</th>
-					<th class="table-header">작성자</th>
-					<th class="table-header">등록일</th>
-					<th class="table-header">조회수</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${boardList}" var="board">
-					<tr>
-						<td class="table-cell">${board.seq}</td>
-						<td class="table-cell"><a href="getBoard?seq=${board.seq}"
-							class="table-link">${board.title}</a></td>
-						<td class="table-cell">${board.writer}</td>
-						<td class="table-header"><fmt:formatDate
-								pattern="yyyy/MM/dd HH:mm:ss" value="${board.regDate}" /></td>
-						<td class="table-cell">${board.cnt}</td>
-					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
-
-
-			<sec:authorize access="hasRole('ROLE_ADMIN')">
-				<a href="insertBoardPage" class="write-link">글쓰기</a>
-			</sec:authorize>
-
-		<!-- index로 돌아가는 버튼 추가 -->
-		<div class="return-button">
-			<a href="/" class="return-link">메인으로 돌아가기</a>
-		</div>
-	</div>
-
-</body>
-</html>
+function loadInsertBoardPage() {
+    $.ajax({
+        url: '/insertBoardPage',
+        type: 'GET',
+        success: function(response) {
+            $('#content').html(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('글쓰기 페이지 로딩 중 오류:', error);
+            alert('글쓰기 페이지를 불러오는 중 오류가 발생했습니다.');
+        }
+    });
+}
+</script>

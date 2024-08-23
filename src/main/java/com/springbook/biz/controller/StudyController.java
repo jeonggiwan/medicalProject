@@ -15,8 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
 
 import com.springbook.biz.VO.BoardVO;
 import com.springbook.biz.VO.StudyVO;
@@ -80,16 +82,15 @@ public class StudyController {
     }
     
     @PostMapping("/insertBoard")
-    public String insertBoard(@ModelAttribute("board") BoardVO vo) throws IOException {
-        // title 값이 제대로 들어왔는지 확인
-    	System.out.println(vo);
-        if (vo.getTitle() == null || vo.getTitle().trim().isEmpty()) {
-            // title 값이 null이거나 비어있을 때 처리
-            return "redirect:insertBoardPage";
-        }
+    @ResponseBody
+    public ResponseEntity<Map<String, Boolean>> insertBoard(@RequestBody BoardVO vo) {
+        System.out.println("Received BoardVO: " + vo);
         boardService.insertBoard(vo);
-        return "redirect:getBoardList";
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("success", true);
+        return ResponseEntity.ok(response);
     }
+
     
     @PostMapping("/updateBoard")
     public String updateBoard(@ModelAttribute("board") BoardVO vo) {
