@@ -68,7 +68,8 @@
 						AND NAME LIKE CONCAT('%', #{searchKeyword}, '%')
 					</when>
 					<otherwise>
-						AND (ID LIKE CONCAT('%', #{searchKeyword}, '%') OR NAME LIKE
+						AND (ID LIKE CONCAT('%', #{searchKeyword}, '%') OR NAME
+						LIKE
 						CONCAT('%', #{searchKeyword}, '%'))
 					</otherwise>
 				</choose>
@@ -76,26 +77,58 @@
 		</where>
 	</select>
 
-    <select id="getMemberByEmail" resultType="member">
-        SELECT * FROM MEMBER WHERE EMAIL = #{email}
-    </select>
+	<select id="getMemberByEmail" resultType="member">
+		SELECT * FROM MEMBER
+		WHERE EMAIL = #{email}
+	</select>
 
-    <select id="getMemberByPhoneNumber" resultType="member">
-        SELECT * FROM MEMBER WHERE PHONENUMBER = #{phoneNumber}
-    </select>
-    
-    <delete id="deleteMembers" parameterType="java.util.List">
-        DELETE FROM MEMBER 
-        WHERE ID IN 
-        <foreach item="id" collection="list" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-        AND ROLE != 'ADMIN'
-    </delete>
+	<select id="getMemberByPhoneNumber" resultType="member">
+		SELECT * FROM
+		MEMBER WHERE PHONENUMBER = #{phoneNumber}
+	</select>
+
+	<delete id="deleteMembers" parameterType="java.util.List">
+		DELETE FROM MEMBER
+		WHERE ID IN
+		<foreach item="id" collection="list" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+		AND ROLE != 'ADMIN'
+	</delete>
 
 	<insert id="insertMember" parameterType="member">
-        INSERT INTO MEMBER (ID, PASSWORD, NAME, ROLE, SPECIALTY, PHONENUMBER, EMAIL, JOB)
-        VALUES (#{id}, #{password}, #{name}, #{role}, #{specialty}, #{phoneNumber}, #{email}, #{job})
-    </insert>
+		INSERT INTO MEMBER (ID,
+		PASSWORD, NAME, ROLE, SPECIALTY, PHONENUMBER, EMAIL,
+		JOB)
+		VALUES (#{id},
+		#{password}, #{name}, #{role}, #{specialty}, #{phoneNumber},
+		#{email},
+		#{job})
+	</insert>
+
+	<update id="updateMember" parameterType="member">
+		UPDATE MEMBER
+		SET
+		PASSWORD = #{password},
+		NAME = #{name},
+		SPECIALTY = #{specialty},
+		PHONENUMBER = #{phoneNumber},
+		EMAIL = #{email},
+		JOB = #{job}
+		WHERE ID =
+		#{id}
+	</update>
+
+	<delete id="deleteMember" parameterType="string">
+		DELETE FROM MEMBER
+		WHERE
+		ID = #{id} AND ROLE != 'ADMIN'
+	</delete>
+
+	<select id="findMemberByEmailAndName" parameterType="map"
+		resultType="member">
+		SELECT * FROM MEMBER WHERE EMAIL = #{email} AND NAME = #{name}
+	</select>
 </mapper>
 

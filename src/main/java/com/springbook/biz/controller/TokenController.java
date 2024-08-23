@@ -23,12 +23,14 @@ public class TokenController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
     
+    //토큰 재발급
     @PostMapping("/refreshToken")
     @ResponseBody
     public ResponseEntity<Void> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         return memberService.refreshToken(request, response);
     }
     
+    //토큰 정보
     @GetMapping("/tokenInfo")
     @ResponseBody
     public ResponseEntity<TokenInfo> getTokenInfo(HttpServletRequest request) {

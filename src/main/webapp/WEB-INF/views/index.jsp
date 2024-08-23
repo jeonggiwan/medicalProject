@@ -53,7 +53,7 @@
 							</colgroup>
 							<thead class="table-header">
 								<tr>
-									<th class="table-cell">선택</th>
+									<th class="table-cell">번호</th>
 									<th class="table-cell">환자 ID</th>
 									<th class="table-cell">환자 이름</th>
 									<th class="table-cell">검사 날짜</th>
@@ -68,7 +68,7 @@
 								<c:forEach var="study" items="${studyList}">
 									<tr class="patient-row" data-pid="${study.pid}"
 										data-pname="${study.pName}">
-										<td class="table-cell text-center"><input type="checkbox"></td>
+										<td class="table-cell">${study.studyKey}</td>
 										<td class="table-cell">${study.pid}</td>
 										<td class="table-cell">${study.pName}</td>
 										<td class="table-cell">${study.studyDate}</td>
@@ -168,11 +168,11 @@
     });
     // 더블클릭 이벤트 리스너 수정
     $('#patientTable').on('dblclick', '.patient-row', function() {
-        var pid = $(this).find('td:eq(1)').text(); // 환자 ID
+        var studyKey = $(this).find('td:eq(0)').text(); // 환자 STUDYKEY
         var studyDate = $(this).find('td:eq(3)').text(); // 검사 날짜
         
         // 뷰어로 이동
-        window.location.href = '/viewer?pid=' + pid + '&studyDate=' + studyDate;
+        window.location.href = '/viewer?studyKey=' + studyKey + '&studyDate=' + studyDate;
     });
     function setupAjaxInterceptor() {
         $.ajaxSetup({
@@ -261,7 +261,7 @@
                 page: currentPage
             },
             success: function(response) {
-                updatePatientTable(response.patients);
+            	updatePatientTable(response.patients);
                 updatePagination(response.currentPage, response.totalPages);
             },
             error: function(xhr, status, error) {
@@ -277,7 +277,7 @@
 
         patients.forEach(function(patient) {
             var row = $('<tr>').addClass('patient-row').attr('data-pid', patient.pid).attr('data-pname', patient.pName);
-            row.append($('<td>').addClass('table-cell text-center').append($('<input>').attr('type', 'checkbox')));
+            row.append($('<td>').addClass('table-cell').text(patient.studyKey));
             row.append($('<td>').addClass('table-cell').text(patient.pid));
             row.append($('<td>').addClass('table-cell').text(patient.pName));
             row.append($('<td>').addClass('table-cell').text(patient.studyDate));

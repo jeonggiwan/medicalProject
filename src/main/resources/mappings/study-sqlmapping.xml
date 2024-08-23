@@ -17,7 +17,7 @@
 	<select id="getStudyDetails" resultType="study"
 		parameterType="study">
 		SELECT * FROM dicom
-		WHERE PID = #{pid}
+		WHERE STUDYKEY = #{studyKey}
 		AND STUDYDATE =
 		#{studyDate}
 	</select>

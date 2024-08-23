@@ -22,9 +22,9 @@ public class StudyDAOMybatis {
         return mybatis.selectList("StudyDAO.getPatientHistory", pid);
     }
 
-    public StudyVO getStudyDetails(String pid, String studyDate) {
+    public StudyVO getStudyDetails(String studyKey, String studyDate) {
         StudyVO params = new StudyVO();
-        params.setPid(pid);
+        params.setStudyKey(studyKey);
         params.setStudyDate(studyDate);
         return mybatis.selectOne("StudyDAO.getStudyDetails", params);
     }

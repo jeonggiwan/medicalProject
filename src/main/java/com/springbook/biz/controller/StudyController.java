@@ -40,6 +40,8 @@ public class StudyController {
         return "public/home";
     }
     
+    
+    //메인페이지(환자 목록 페이지)
     @GetMapping("/")
     public String index(Model model, HttpServletRequest request, @RequestParam(defaultValue = "1") int page) {
         String token = jwtTokenProvider.resolveToken(request);
@@ -67,7 +69,7 @@ public class StudyController {
         }
     }
     
-    
+    //환자기록 페이지
     @GetMapping("/getPatientHistory")
     @ResponseBody
     public List<StudyVO> getPatientHistory(@RequestParam String pid) {
@@ -118,13 +120,15 @@ public class StudyController {
         return "getBoardList";
     }
     
+    //환자찾기
     @GetMapping("/searchPatients")
     @ResponseBody
     public Map<String, Object> searchPatients(@RequestParam String searchKeyword, 
                                               @RequestParam String searchType,
                                               @RequestParam(defaultValue = "1") int page,
                                               @RequestParam(defaultValue = "6") int pageSize) {
-        List<StudyVO> patients;
+       
+    	List<StudyVO> patients;
         if (searchType.equals("pid")) {
             patients = studyService.searchPatientsByPid(searchKeyword);
         } else {
@@ -143,6 +147,7 @@ public class StudyController {
         result.put("currentPage", page);
         result.put("totalPages", totalPages);
 
+        System.out.println(result);
         return result;
     }
 }

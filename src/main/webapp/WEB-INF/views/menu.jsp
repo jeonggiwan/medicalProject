@@ -11,11 +11,8 @@
 		<span id="accessTokenInfo">로그인 만료까지: <span
 			id="accessTokenExpiration"></span></span>
 		<button id="extendTokenButton" class="header-link">시간 연장</button>
-		<sec:authorize access="hasRole('ROLE_USER')">
-			<a href="#" class="header-link" id="mypageButton">마이페이지</a>
-		</sec:authorize>
-
-		<a href="#" class="header-link" id="logoutButton">로그아웃</a>
+		<a href="#" class="header-link" id="mypageButton">마이페이지</a> <a
+			href="#" class="header-link" id="logoutButton">로그아웃</a>
 		<sec:authorize access="hasRole('ROLE_ADMIN')">
 			<a href="#" class="header-link" id="memberManagementMenu">회원관리</a>
 		</sec:authorize>
@@ -44,9 +41,14 @@
 	}
 
 	function startCountdown(remainingTime) {
-		clearInterval(countdownInterval);
-
+	    clearInterval(countdownInterval);
+	    lastFocusTime = Date.now();
 		function updateCountdown() {
+	        const currentTime = Date.now();
+	        const elapsedTime = currentTime - lastFocusTime;
+	        remainingTime -= elapsedTime;
+	        lastFocusTime = currentTime;
+
 			if (remainingTime <= 0) {
 				$('#accessTokenExpiration').text('토큰 만료됨');
 				clearInterval(countdownInterval);
@@ -56,7 +58,6 @@
 			const minutes = Math.floor(remainingTime / (60 * 1000));
 			const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
 			$('#accessTokenExpiration').text(minutes + '분 ' + seconds + '초');
-			remainingTime -= 1000;
 		}
 
 		updateCountdown();
@@ -65,9 +66,12 @@
 
 	$(document)
 			.ready(
+					
 					function() {
 						updateAccessTokenInfo();
-
+						$(window).focus(function() {
+						    updateAccessTokenInfo();
+						});
 						$('#extendTokenButton')
 								.click(
 										function() {

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../CSS/dicom.css">
 </head>
 <body>
+
     <h1 style="display:flex; justify-content:center">DICOM Viewer</h1>
     
     <div id="dicom" class="cornerstone-element" oncontextmenu="return false" style="width:512px;height:512px;border:1px solid black;margin:0 auto"></div>
