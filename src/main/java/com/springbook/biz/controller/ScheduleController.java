@@ -1,9 +1,9 @@
 package com.springbook.biz.controller;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,81 +23,101 @@ import com.springbook.biz.security.JwtTokenProvider;
 @Controller
 public class ScheduleController {
 
-    @Autowired
-    private ScheduleService scheduleService;
+	@Autowired
+	private ScheduleService scheduleService;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/saveSchedule")
-    @ResponseBody
-    public ResponseEntity<String> saveSchedule(@RequestParam String day, @RequestParam String detail, HttpServletRequest request) {
-        try {
-        	
-            String token = jwtTokenProvider.resolveToken(request);
-            System.out.println("11111111111111");           if (token != null && jwtTokenProvider.validateToken(token)) {
-                String id = jwtTokenProvider.getUsername(token);
-                
-                System.out.println(detail);
-                System.out.println(day);
-                SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss 'GMT'Z", Locale.ENGLISH);
-                Date date = inputFormat.parse(day);
-                System.out.println(date);
-                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String dateStr = outputFormat.format(date);
-                
-                
-                System.out.println(dateStr);
-                ScheduleVO schedule = new ScheduleVO();
-                schedule.setId(id);
-                schedule.setDay(dateStr);
-                schedule.setDetail(detail);
-                
-                // 기존 일정 확인
-                ScheduleVO existingSchedule = scheduleService.getSchedule(schedule);
-                
-                if (existingSchedule != null) {
-                    // 기존 일정이 있으면 업데이트
-                    scheduleService.updateSchedule(schedule);
-                } else {
-                    // 새로운 일정이면 삽입
-                    scheduleService.insertSchedule(schedule);
-                }
-                
-                return ResponseEntity.ok("success");
-            } else {
-                return ResponseEntity.status(401).body("인증이 필요합니다.");
-            }
-        } catch (ParseException e) {
-            return ResponseEntity.badRequest().body("Invalid date format: " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error: " + e.getMessage());
-        }
-    }
-    
-    @GetMapping("/getSchedule")
-    @ResponseBody
-    public ResponseEntity<ScheduleVO> getSchedule(@RequestParam String day, HttpServletRequest request) {
-        try {
-            System.out.println("Received request for day: " + day);
-            
-            String token = jwtTokenProvider.resolveToken(request);
-            if (token != null && jwtTokenProvider.validateToken(token)) {
-                String id = jwtTokenProvider.getUsername(token);
-                
-                ScheduleVO schedule = new ScheduleVO();
-                schedule.setId(id);
-                schedule.setDay(day); 
-                ScheduleVO result = scheduleService.getSchedule(schedule);
-                
-                return ResponseEntity.ok(result);
-            } else {
-                return ResponseEntity.status(401).body(null);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(null);
-        }
-    }
+	//메모 저장
+	@PostMapping("/saveSchedule")
+	@ResponseBody
+	public ResponseEntity<String> saveSchedule(@RequestParam String day, @RequestParam String detail,
+			HttpServletRequest request) {
+		try {
+
+			String token = jwtTokenProvider.resolveToken(request);
+			if (token != null && jwtTokenProvider.validateToken(token)) {
+				String id = jwtTokenProvider.getUsername(token);
+
+				//yyyy-MM-dd로 변경
+				SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss 'GMT'Z", Locale.ENGLISH);
+				Date date = inputFormat.parse(day);
+
+				//yyyyMMdd로 변경
+				SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String dateStr = outputFormat.format(date);
+
+
+				ScheduleVO schedule = new ScheduleVO();
+				schedule.setId(id);
+				schedule.setDay(dateStr);
+				schedule.setDetail(detail);
+
+				// 기존 일정 확인
+				ScheduleVO existingSchedule = scheduleService.getSchedule(schedule);
+
+				if (existingSchedule != null) {
+					// 기존 일정이 있으면 업데이트
+					scheduleService.updateSchedule(schedule);
+				} else {
+					// 새로운 일정이면 삽입
+					scheduleService.insertSchedule(schedule);
+				}
+
+				return ResponseEntity.ok("success");
+			} else {
+				return ResponseEntity.status(401).body("인증이 필요합니다.");
+			}
+		} catch (ParseException e) {
+			return ResponseEntity.badRequest().body("Invalid date format: " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Error: " + e.getMessage());
+		}
+	}
+
+	//메모 불러오기
+	@GetMapping("/getSchedule")
+	@ResponseBody
+	public ResponseEntity<ScheduleVO> getSchedule(@RequestParam String day, HttpServletRequest request) {
+		try {
+			System.out.println("Received request for day: " + day);
+
+			String token = jwtTokenProvider.resolveToken(request);
+			if (token != null && jwtTokenProvider.validateToken(token)) {
+				String id = jwtTokenProvider.getUsername(token);
+
+				ScheduleVO schedule = new ScheduleVO();
+				schedule.setId(id);
+				schedule.setDay(day);
+				ScheduleVO result = scheduleService.getSchedule(schedule);
+
+				return ResponseEntity.ok(result);
+			} else {
+				return ResponseEntity.status(401).body(null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body(null);
+		}
+	}
+	
+	@GetMapping("/getScheduleDates")
+	@ResponseBody
+	public ResponseEntity<List<String>> getScheduleDates(HttpServletRequest request) {
+	    try {
+	        String token = jwtTokenProvider.resolveToken(request);
+	        if (token != null && jwtTokenProvider.validateToken(token)) {
+	            String id = jwtTokenProvider.getUsername(token);
+	            List<String> dates = scheduleService.getScheduleDates(id);
+	            return ResponseEntity.ok(dates);
+	        } else {
+	            return ResponseEntity.status(401).body(null);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(500).body(null);
+	    }
+	}
 }

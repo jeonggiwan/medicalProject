@@ -1,8 +1,9 @@
 package com.springbook.biz.schedule;
 
+import java.util.List;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.springbook.biz.VO.ScheduleVO;
@@ -22,5 +23,9 @@ public class ScheduleDAOMybatis {
 
     public ScheduleVO getSchedule(ScheduleVO vo) {
         return mybatis.selectOne("ScheduleDAO.getSchedule", vo);
+    }
+    
+    public List<String> getScheduleDates(String id) {
+        return mybatis.selectList("ScheduleDAO.getScheduleDates", id);
     }
 }

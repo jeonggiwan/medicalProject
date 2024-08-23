@@ -1,5 +1,7 @@
 package com.springbook.biz.schedule;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +25,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleVO getSchedule(ScheduleVO vo) {
         return scheduleDAO.getSchedule(vo);
+    }
+    
+    @Override
+    public List<String> getScheduleDates(String id) {
+        return scheduleDAO.getScheduleDates(id);
     }
 }

@@ -1,6 +1,7 @@
 body {
     font-family: 'Noto Sans KR', sans-serif;
 }
+
 .container {
     max-width: 56rem;
     margin-left: auto;
@@ -10,67 +11,145 @@ body {
     border-radius: 0.5rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo-image {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+.header-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1;
+}
+
+.header-link {
+    margin-left: 1rem;
+    text-decoration: none;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.header-link:hover {
+    color: #2d3748;
+}
+
+#accessTokenInfo {
+    font-size: 0.8rem;
+    margin-right: 1rem;
+}
+
+#extendTokenButton {
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #4a5568;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+#extendTokenButton:hover {
+    background-color: #2d3748;
+}
+
 .title {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 1.5rem;
 }
+
 .form-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
 }
+
 .form-row {
     display: grid;
     grid-template-columns: 1fr 3fr;
     gap: 1rem;
     align-items: center;
 }
+
 .form-label {
     font-weight: 600;
 }
+
 .form-input {
     border: 1px solid #D1D5DB;
     padding: 0.5rem;
     border-radius: 0.25rem;
 }
+
 .form-input-readonly {
     background-color: #F3F4F6;
 }
+
 .form-textarea {
     border: 1px solid #D1D5DB;
     padding: 0.5rem;
     border-radius: 0.25rem;
 }
+
 .submit-button {
     background-color: #3B82F6;
     color: white;
     padding: 0.5rem;
     border-radius: 0.25rem;
 }
+
 .submit-button:hover {
     background-color: #2563EB;
 }
+
 .button-container {
     margin-top: 1.5rem;
     display: flex;
     justify-content: space-between;
 }
+
 .delete-button {
     background-color: #EF4444;
     color: white;
     padding: 0.5rem;
     border-radius: 0.25rem;
 }
+
 .delete-button:hover {
     background-color: #DC2626;
 }
+
 .list-button {
     background-color: #E5E7EB;
     color: black;
     padding: 0.5rem;
     border-radius: 0.25rem;
 }
+
 .list-button:hover {
     background-color: #D1D5DB;
 }

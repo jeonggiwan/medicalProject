@@ -82,4 +82,26 @@ public class MemberDAOMybatis {
     public MemberVO getMemberByPhoneNumber(String phoneNumber) {
         return mybatis.selectOne("MemberDAO.getMemberByPhoneNumber", phoneNumber);
     }
+    
+    public int updateMember(MemberVO member) {
+        return mybatis.update("MemberDAO.updateMember", member);
+    }
+
+    public int deleteMember(String id) {
+        return mybatis.delete("MemberDAO.deleteMember", id);
+    }
+    
+    public MemberVO findMemberByEmailAndName(String email, String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        return mybatis.selectOne("MemberDAO.findMemberByEmailAndName", params);
+    }
+
+    public MemberVO findMemberByEmailAndId(String email, String id) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("id", id);
+        return mybatis.selectOne("MemberDAO.findMemberByEmailAndId", params);
+    }
 }
