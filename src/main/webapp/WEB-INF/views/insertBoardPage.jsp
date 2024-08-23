@@ -16,8 +16,8 @@
                 <input type="text" id="writer" name="writer" class="search-input" style="flex: 1;">
             </div>
             <div class="search-inputs">
-                <label for="content" class="search-title" style="width: 100px;">내용</label>
-                <textarea id="content" name="content" rows="6" class="search-input" style="flex: 1;"></textarea>
+                <label for="content2" class="search-title" style="width: 100px;">내용</label>
+                <textarea id="content2" name="content2" rows="6" class="search-input" style="flex: 1;"></textarea>
             </div>
 
             <div class="search-buttons">
@@ -36,8 +36,10 @@ $(document).ready(function() {
         var formData = {
             title: $('#title').val(),
             writer: $('#writer').val(),
-            content: $('#content').val()
+            content: $('#content2') .val()
         };
+
+        console.log(formData); // 폼 데이터 확인용 로그
 
         $.ajax({
             type: 'POST',

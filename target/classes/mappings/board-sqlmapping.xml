@@ -5,8 +5,8 @@
 <mapper namespace="BoardDAO">
 
 	<insert id="insertBoard" parameterType="com.springbook.biz.VO.BoardVO">
-		INSERT INTO BOARD(TITLE, WRITER, CONTENT)
-		VALUES(#{title}, #{writer}, #{content})
+		INSERT INTO BOARD(SEQ, TITLE, WRITER, CONTENT)
+		VALUES((SELECT COALESCE(MAX(SEQ), 0) + 1 FROM BOARD), #{title}, #{writer}, #{content})
 	</insert>
 	
 	<update id="updateBoard" parameterType="com.springbook.biz.VO.BoardVO">
@@ -16,6 +16,10 @@
 	<delete id="deleteBoard" parameterType="com.springbook.biz.VO.BoardVO">
 		DELETE FROM BOARD WHERE SEQ=#{seq}
 	</delete>
+	
+	<update id="reorderSeq" parameterType="com.springbook.biz.VO.BoardVO">
+		UPDATE BOARD SET SEQ = SEQ - 1 WHERE SEQ > #{seq}
+	</update>
 	
 	<select id="getBoard" resultType="com.springbook.biz.VO.BoardVO">
 		SELECT * FROM BOARD WHERE SEQ=#{seq}

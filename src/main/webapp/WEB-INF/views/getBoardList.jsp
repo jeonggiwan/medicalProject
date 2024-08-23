@@ -9,32 +9,31 @@
     <div class="table-container">
         <table class="table" id="boardTable">
             <colgroup>
-                <col style="width: 10%;">  <!-- 제목 -->
-                <col style="width: 50%;">  <!-- 내용 -->
+                <col style="width: 5%;">  <!-- 글번호 -->
+                <col style="width: 50%;">  <!-- 제목 -->
                 <col style="width: 10%;">  <!-- 작성자 -->
                 <col style="width: 20%;">  <!-- 등록일 -->
-                <col style="width: 10%;">  <!-- 조회수 -->
             </colgroup>
             <thead class="table-header">
                 <tr>
+                    <th class="table-cell">글번호</th>
                     <th class="table-cell">제목</th>
-                    <th class="table-cell">내용</th>
                     <th class="table-cell">작성자</th>
                     <th class="table-cell">등록일</th>
-                    <th class="table-cell">조회수</th>
                 </tr>
             </thead>
             <tbody>
-                <c:forEach var="board" items="${boardList}">
-                    <tr class="board-row">
-                        <td class="table-cell" style="text-align: center;">
-                            <a href="#" onclick="loadBoardDetail(${board.seq}); return false;" style="color: skyblue;">${board.title}</a>
-                        </td>
-                        <td class="table-cell" style="text-align: left;">${fn:substring(board.content, 0, 50)}${fn:length(board.content) > 50 ? '...' : ''}</td>
-                        <td class="table-cell" style="text-align: center;">${board.writer}</td>
-                        <td class="table-cell" style="text-align: center;"><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${board.regDate}" /></td>
-                        <td class="table-cell" style="text-align: center;">${board.cnt}</td>
-                    </tr>
+                <c:forEach var="board" items="${boardList}" varStatus="status">
+                    <c:if test="${status.index < 6}">
+                        <tr class="board-row" onclick="loadBoardDetail(${board.seq});">
+                            <td class="table-cell" style="text-align: center;">${board.seq}</td>
+                            <td class="table-cell" style="text-align: left; cursor: pointer;">
+                                <span style="color: black;">${board.title}</span>
+                            </td>
+                            <td class="table-cell" style="text-align: center;">${board.writer}</td>
+                            <td class="table-cell" style="text-align: center;"><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${board.regDate}" /></td>
+                        </tr>
+                    </c:if>
                 </c:forEach>
             </tbody>
         </table>
@@ -72,6 +71,21 @@ function loadInsertBoardPage() {
         error: function(xhr, status, error) {
             console.error('글쓰기 페이지 로딩 중 오류:', error);
             alert('글쓰기 페이지를 불러오는 중 오류가 발생했습니다.');
+        }
+    });
+}
+
+function loadPage(page) {
+    $.ajax({
+        url: '/getBoardList',
+        type: 'GET',
+        data: { page: page },
+        success: function(response) {
+            $('#content').html(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('페이지 로딩 중 오류:', error);
+            alert('페이지를 불러오는 중 오류가 발생했습니다.');
         }
     });
 }

@@ -32,7 +32,8 @@ public class BoardDAOMybatis{
 	
 	public void deleteBoard(BoardVO vo) {
 		System.out.println("===> Mybatis로 deleteBoard() 기능 처리");
-		mybatis.delete("BoardDAO.deleteBoard", vo);		
+		mybatis.delete("BoardDAO.deleteBoard", vo);
+		mybatis.update("BoardDAO.reorderSeq", vo); // seq 재정렬 호출
 	}
 	
 	public void increaseCnt(BoardVO vo) {
