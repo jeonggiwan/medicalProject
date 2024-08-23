@@ -18,4 +18,8 @@
         SELECT * FROM schedule
         WHERE id = #{id} AND Day = #{day}
     </select>
+    
+	<select id="getScheduleDates" resultType="string">
+		SELECT DISTINCT Day FROM schedule WHERE id = #{id}
+	</select>
 </mapper>

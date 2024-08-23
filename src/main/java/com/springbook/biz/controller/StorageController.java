@@ -37,13 +37,14 @@ public class StorageController {
     private String pythonScriptUrl;
     
     @GetMapping("/viewer")
-    public String viewer(@RequestParam String pid, 
+    public String viewer(@RequestParam String studyKey, 
                          @RequestParam String studyDate, 
                          Model model,
                          HttpSession session) {
         
-        System.out.println(pid);
-        StudyVO study = studyService.getStudyDetails(pid, studyDate);
+        
+        StudyVO study = studyService.getStudyDetails(studyKey, studyDate);
+        System.out.println(study);
         System.out.println(studyDate);
         if (study != null) {
             // 파일 경로 생성

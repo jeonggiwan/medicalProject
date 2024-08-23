@@ -130,5 +130,13 @@ public class JwtTokenProvider {
     public long getRefreshTokenValidMillisecond() {
         return refreshTokenValidMillisecond;
     }
+    
+    public void removeAccessTokenCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("ACCESS_TOKEN", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
 
 }

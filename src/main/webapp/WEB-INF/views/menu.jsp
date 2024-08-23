@@ -5,17 +5,14 @@
 <header class="header">
 	<div class="header-left">
 		<h1 class="header-title">Mercy</h1>
-		<a href="#" class="header-link" id="noticeLink">공지사항</a>
+		<a href="/getBoardList" class="header-link">공지사항</a>
 	</div>
 	<div class="header-right">
 		<span id="accessTokenInfo">로그인 만료까지: <span
 			id="accessTokenExpiration"></span></span>
 		<button id="extendTokenButton" class="header-link">시간 연장</button>
-		<sec:authorize access="hasRole('ROLE_USER')">
-			<a href="#" class="header-link" id="mypageButton">마이페이지</a>
-		</sec:authorize>
-
-		<a href="#" class="header-link" id="logoutButton">로그아웃</a>
+		<a href="#" class="header-link" id="mypageButton">마이페이지</a> <a
+			href="#" class="header-link" id="logoutButton">로그아웃</a>
 		<sec:authorize access="hasRole('ROLE_ADMIN')">
 			<a href="#" class="header-link" id="memberManagementMenu">회원관리</a>
 		</sec:authorize>

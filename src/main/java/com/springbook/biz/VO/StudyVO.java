@@ -1,7 +1,7 @@
 package com.springbook.biz.VO;
 
 public class StudyVO {
-    private int studyKey;
+    private String studyKey;
     private String studyInsUid;
     private String studyDate;
     private String studyTime;
@@ -20,18 +20,42 @@ public class StudyVO {
     private int delFlag;
     private String seriesInsUid;
     private int seriesNum;
-    private String seriesDate;
+    public String getStudyKey() {
+		return studyKey;
+	}
+
+	public void setStudyKey(String studyKey) {
+		this.studyKey = studyKey;
+	}
+
+	public String getpSex() {
+		return pSex;
+	}
+
+	public void setpSex(String pSex) {
+		this.pSex = pSex;
+	}
+
+	public String getpBirthDateTime() {
+		return pBirthDateTime;
+	}
+
+	public void setpBirthDateTime(String pBirthDateTime) {
+		this.pBirthDateTime = pBirthDateTime;
+	}
+
+	public String getpAge() {
+		return pAge;
+	}
+
+	public void setpAge(String pAge) {
+		this.pAge = pAge;
+	}
+
+	private String seriesDate;
     private String seriesTime;
     private String seriesDesc;
 
-    // Getters and Setters
-    public int getStudyKey() {
-        return studyKey;
-    }
-
-    public void setStudyKey(int studyKey) {
-        this.studyKey = studyKey;
-    }
 
     public String getStudyInsUid() {
         return studyInsUid;

@@ -24,8 +24,8 @@ public class StudyServiceImpl implements StudyService {
     }
 
     @Override
-    public StudyVO getStudyDetails(String pid, String studyDate) {
-        return studyDAO.getStudyDetails(pid, studyDate);
+    public StudyVO getStudyDetails(String studyKey, String studyDate) {
+        return studyDAO.getStudyDetails(studyKey, studyDate);
     }
 
     @Override

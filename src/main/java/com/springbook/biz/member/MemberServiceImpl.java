@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -142,28 +144,6 @@ public class MemberServiceImpl implements MemberService {
         }
         return null;
     }
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        // 액세스 토큰 쿠키 삭제
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("ACCESS_TOKEN".equals(cookie.getName())) {
-                    cookie.setValue("");
-                    cookie.setPath("/");
-                    cookie.setMaxAge(0);
-                    cookie.setHttpOnly(true);
-                    cookie.setSecure(true); // HTTPS를 사용하는 경우
-                    response.addCookie(cookie);
-                    break;
-                }
-            }
-        }
-
-        // 시큐리티 컨텍스트 초기화
-        SecurityContextHolder.clearContext();
-
-        return ResponseEntity.ok("로그아웃 성공");
-    }
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -233,6 +213,108 @@ public class MemberServiceImpl implements MemberService {
         result.put("emailExists", memberDAO.getMemberByEmail(email) != null);
         result.put("phoneExists", memberDAO.getMemberByPhoneNumber(phoneNumber) != null);
         return result;
+    }
+    
+    @Override
+    public boolean verifyCurrentPassword(String userId, String currentPassword) {
+        MemberVO member = memberDAO.getMemberById(userId);
+        if (member != null) {
+            return passwordEncoder.matches(currentPassword, member.getPassword());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean changePassword(String userId, String newPassword) {
+        MemberVO member = memberDAO.getMemberById(userId);
+        if (member != null) {
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            member.setPassword(encodedPassword);
+            return memberDAO.updateMember(member) > 0;
+        }
+        return false;
+    }
+    @Override
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        jwtTokenProvider.removeAccessTokenCookie(response);
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("로그아웃 성공");
+    }
+
+    @Override
+    public ResponseEntity<String> deleteAccount(String userId, HttpServletResponse response) {
+        MemberVO member = memberDAO.getMemberById(userId);
+        if (member != null && member.getRole() != UserRole.ADMIN) {
+            int result = memberDAO.deleteMember(userId);
+            if (result > 0) {
+                jwtTokenProvider.removeAccessTokenCookie(response);
+                SecurityContextHolder.clearContext();
+                return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\": \"계정이 성공적으로 삭제되었습니다.\"}");
+            }
+        }
+        return ResponseEntity.badRequest()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body("{\"message\": \"계정 삭제에 실패했습니다.\"}");
+    }
+    
+    @Override
+    public boolean findIdAndSendEmail(String email, String name) {
+        MemberVO member = memberDAO.findMemberByEmailAndName(email, name);
+        if (member != null) {
+            // 이메일 전송 로직
+            String subject = "아이디 찾기 결과";
+            String content = "회원님의 아이디는 " + member.getId() + " 입니다.";
+            try {
+                EmailUtil.sendEmail(email, subject, content);
+                return true;
+            } catch (Exception e) {
+                logger.error("Failed to send email", e);
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean resetPasswordAndSendEmail(String email, String id) {
+        MemberVO member = memberDAO.findMemberByEmailAndId(email, id);
+        if (member != null) {
+            // 새 비밀번호 생성 (10자리 랜덤 문자열)
+            String newPassword = generateRandomPassword(10);
+            
+            // 비밀번호 암호화
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            member.setPassword(encodedPassword);
+            
+            // DB에 암호화된 새 비밀번호 저장
+            int updateResult = memberDAO.updateMember(member);
+            
+            if (updateResult > 0) {
+                // 이메일 전송 로직
+                String subject = "비밀번호 재설정";
+                String content = "회원님의 새로운 임시 비밀번호는 " + newPassword + " 입니다. 보안을 위해 로그인 후 즉시 비밀번호를 변경해주세요.";
+                try {
+                    EmailUtil.sendEmail(email, subject, content);
+                    return true;
+                } catch (Exception e) {
+                    logger.error("Failed to send email", e);
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    private String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 }
 

@@ -16,7 +16,8 @@
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<link href="${pageContext.request.contextPath}/CSS/index.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/CSS/index.css"
+	rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 text-gray-900">
@@ -37,7 +38,7 @@
 						<button class="search-button search-button-red"
 							onclick="searchPatients()">검색</button>
 					</div>
-		
+
 					<div class="table-container">
 						<table class="table" id="patientTable">
 							<colgroup>
@@ -53,7 +54,7 @@
 							</colgroup>
 							<thead class="table-header">
 								<tr>
-									<th class="table-cell">선택</th>
+									<th class="table-cell">번호</th>
 									<th class="table-cell">환자 ID</th>
 									<th class="table-cell">환자 이름</th>
 									<th class="table-cell">검사 날짜</th>
@@ -68,7 +69,7 @@
 								<c:forEach var="study" items="${studyList}">
 									<tr class="patient-row" data-pid="${study.pid}"
 										data-pname="${study.pName}">
-										<td class="table-cell text-center"><input type="checkbox"></td>
+										<td class="table-cell">${study.studyKey}</td>
 										<td class="table-cell">${study.pid}</td>
 										<td class="table-cell">${study.pName}</td>
 										<td class="table-cell">${study.studyDate}</td>
@@ -156,7 +157,6 @@
 		</div>
 	</div>
 	<script>
-
     let currentPage = 1;
     let totalPages = 1;
     
@@ -164,16 +164,14 @@
         setupAjaxInterceptor();
         setupEventListeners();
         initializeCalendar();
-        
     });
-    // 더블클릭 이벤트 리스너 수정
+
     $('#patientTable').on('dblclick', '.patient-row', function() {
-        var pid = $(this).find('td:eq(1)').text(); // 환자 ID
-        var studyDate = $(this).find('td:eq(3)').text(); // 검사 날짜
-        
-        // 뷰어로 이동
-        window.location.href = '/viewer?pid=' + pid + '&studyDate=' + studyDate;
+        var studyKey = $(this).find('td:eq(0)').text();
+        var studyDate = $(this).find('td:eq(3)').text();
+        window.location.href = '/viewer?studyKey=' + studyKey + '&studyDate=' + studyDate;
     });
+
     function setupAjaxInterceptor() {
         $.ajaxSetup({
             beforeSend: function (xhr) {
@@ -219,7 +217,6 @@
         });
     }
 
-    
     function handlePatientRowClick() {
         var pid = $(this).data('pid');
         var pName = $(this).data('pname');
@@ -278,7 +275,7 @@
 
         patients.forEach(function(patient) {
             var row = $('<tr>').addClass('patient-row').attr('data-pid', patient.pid).attr('data-pname', patient.pName);
-            row.append($('<td>').addClass('table-cell text-center').append($('<input>').attr('type', 'checkbox')));
+            row.append($('<td>').addClass('table-cell').text(patient.studyKey));
             row.append($('<td>').addClass('table-cell').text(patient.pid));
             row.append($('<td>').addClass('table-cell').text(patient.pName));
             row.append($('<td>').addClass('table-cell').text(patient.studyDate));
@@ -325,21 +322,78 @@
         });
     }
 
-    function initializeCalendar() {
-        const calendarEl = document.getElementById('calendar');
-        flatpickr(calendarEl, {
-            inline: true,
-            mode: "single",
-            dateFormat: "Y-m-d",
-            onChange: function(selectedDates, dateStr, instance) {
-                if (selectedDates.length > 0) {
-                    loadMemo(dateStr);
-                } else {
-                    console.log("No date selected.");
+    function getScheduleDates() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: 'getScheduleDates',
+                type: 'GET',
+                success: function(dates) {
+                    // 날짜를 하루 앞당깁니다.
+                    const adjustedDates = dates.map(date => {
+                        const d = new Date(date);
+                        d.setDate(d.getDate() - 1);
+                        return d.toISOString().split('T')[0];
+                    });
+                    resolve(adjustedDates);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading schedule dates:', error);
+                    reject(error);
                 }
-            }
+            });
         });
     }
+
+
+    function initializeCalendar() {
+        const calendarEl = document.getElementById('calendar');
+        
+        getScheduleDates().then(dates => {
+            const fp = flatpickr(calendarEl, {
+                inline: true,
+                mode: "single",
+                dateFormat: "Y-m-d",
+                defaultDate: 'today',
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        loadMemo(dateStr);
+                    } else {
+                        console.log("No date selected.");
+                    }
+                },
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    const currentDate = dayElem.dateObj.toISOString().split('T')[0];
+                    if (dates.includes(currentDate)) {
+                        dayElem.innerHTML += "<span class='event-dot'></span>";
+                    }
+                    
+                    if (dayElem.classList.contains('today')) {
+                        dayElem.classList.remove('today');
+                    }
+                }
+            });
+
+            // 초기화 후 오늘 날짜의 메모를 로드
+            loadMemo(fp.formatDate(new Date(), "Y-m-d"));
+        }).catch(error => {
+            console.error('Failed to initialize calendar:', error);
+            // 에러 발생 시 기본 설정으로 캘린더를 초기화
+            flatpickr(calendarEl, {
+                inline: true,
+                mode: "single",
+                dateFormat: "Y-m-d",
+                defaultDate: 'today',
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        loadMemo(dateStr);
+                    } else {
+                        console.log("No date selected.");
+                    }
+                }
+            });
+        });
+    }
+
 
     function loadMemo(dateStr) {
         console.log("Loading memo for date:", dateStr);
@@ -376,40 +430,44 @@
         const selectedDate = flatpickr.selectedDates[0];
         const memo = $('#memoTextarea').val();
 
-        console.log(selectedDate);
-
         if (selectedDate) {
             console.log("Saving memo for date:", selectedDate, "Content:", memo);
-            saveMemo(selectedDate, memo);
+            saveMemo(selectedDate, memo).then(() => {
+                initializeCalendar();
+            });
         } else {
             alert('유효한 날짜가 선택되지 않았습니다.');
         }
     }
 
     function saveMemo(dateStr, memo) {
-        console.log("Saving memo for date:", dateStr, "Content:", memo);
-        $.ajax({
-            url: 'saveSchedule',
-            type: 'POST',
-            data: {
-                day: dateStr,
-                detail: memo
-            },
-            success: function(response) {
-                console.log("Server response:", response);
-                if (response === 'success') {
-                    alert('메모가 저장되었습니다.');
-                } else {
-                    alert('메모 저장에 실패했습니다. 서버 응답: ' + response);
+        return new Promise((resolve, reject) => {
+            console.log("Saving memo for date:", dateStr, "Content:", memo);
+            $.ajax({
+                url: 'saveSchedule',
+                type: 'POST',
+                data: {
+                    day: dateStr,
+                    detail: memo
+                },
+                success: function(response) {
+                    console.log("Server response:", response);
+                    if (response === 'success') {
+                        alert('메모가 저장되었습니다.');
+                        resolve();
+                    } else {
+                        alert('메모 저장에 실패했습니다. 서버 응답: ' + response);
+                        reject();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error saving memo:', error);
+                    alert('메모 저장 중 오류가 발생했습니다. 상태: ' + status + ', 오류: ' + error);
+                    reject();
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error saving memo:', error);
-                alert('메모 저장 중 오류가 발생했습니다. 상태: ' + status + ', 오류: ' + error);
-            }
+            });
         });
     }
-
 
     function formatDate(date) {
         if (!(date instanceof Date) || isNaN(date)) {
@@ -455,7 +513,6 @@
             }
         });
     }
-
 
     function updatePagination(currentPage, totalPages) {
         var paginationHtml = '';
@@ -526,11 +583,28 @@
             error: function(xhr, status, error) {
                 console.error('Error loading board list:', error);
                 alert('공지사항 로딩 중 오류가 발생했습니다.');
-                // 문제 해결을 위해 에러 로그를 출력합니다.
                 console.log('에러 로그:', error);
             }
         });
     }
-    </script>
+
+    // CSS를 추가하여 원의 스타일을 지정합니다.
+    $('<style>')
+        .prop('type', 'text/css')
+        .html(`
+            .event-dot {
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background-color: #3788d8;
+                position: absolute;
+                bottom: 2px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        `)
+        .appendTo('head');
+</script>
+
 </body>
 </html>
