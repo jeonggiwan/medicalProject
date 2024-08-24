@@ -1,48 +1,57 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 <div class="search-section">
-    <h2 class="search-title">공지사항</h2>
-    <div class="table-container">
-        <table class="table" id="boardTable">
-            <colgroup>
-                <col style="width: 5%;">  <!-- 글번호 -->
-                <col style="width: 50%;">  <!-- 제목 -->
-                <col style="width: 10%;">  <!-- 작성자 -->
-                <col style="width: 20%;">  <!-- 등록일 -->
-            </colgroup>
-            <thead class="table-header">
-                <tr>
-                    <th class="table-cell">글번호</th>
-                    <th class="table-cell">제목</th>
-                    <th class="table-cell">작성자</th>
-                    <th class="table-cell">등록일</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="board" items="${boardList}" varStatus="status">
-                    <c:if test="${status.index < 6}">
-                        <tr class="board-row" onclick="loadBoardDetail(${board.seq});">
-                            <td class="table-cell" style="text-align: center;">${board.seq}</td>
-                            <td class="table-cell" style="text-align: left; cursor: pointer;">
-                                <span style="color: black;">${board.title}</span>
-                            </td>
-                            <td class="table-cell" style="text-align: center;">${board.writer}</td>
-                            <td class="table-cell" style="text-align: center;"><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${board.regDate}" /></td>
-                        </tr>
-                    </c:if>
-                </c:forEach>
-            </tbody>
-        </table>
-    </div>
-    <div class="search-buttons" style="text-align: right; margin-top: 10px;">
-        <sec:authorize access="hasRole('ROLE_ADMIN')">
-            <button class="search-button search-button-blue" onclick="loadInsertBoardPage()">글쓰기</button>
-        </sec:authorize>
-    </div>
+	<h2 class="search-title">공지사항</h2>
+	<div class="table-container">
+		<table class="table" id="boardTable">
+			<colgroup>
+				<col style="width: 5%;">
+				<!-- 글번호 -->
+				<col style="width: 50%;">
+				<!-- 제목 -->
+				<col style="width: 10%;">
+				<!-- 작성자 -->
+				<col style="width: 20%;">
+				<!-- 등록일 -->
+			</colgroup>
+			<thead class="table-header">
+				<tr>
+					<th class="table-cell">글번호</th>
+					<th class="table-cell">제목</th>
+					<th class="table-cell">작성자</th>
+					<th class="table-cell">등록일</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="board" items="${boardList}" varStatus="status">
+					<c:if test="${status.index < 6}">
+						<tr class="board-row" onclick="loadBoardDetail(${board.seq});">
+							<td class="table-cell" style="text-align: center;">${board.seq}</td>
+							<td class="table-cell" style="text-align: left; cursor: pointer;">
+								<span style="color: black;">${board.title}</span>
+							</td>
+							<td class="table-cell" style="text-align: center;">${board.writer}</td>
+							<td class="table-cell" style="text-align: center;"><fmt:formatDate
+									pattern="yyyy/MM/dd HH:mm:ss" value="${board.regDate}" /></td>
+						</tr>
+					</c:if>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
+	<sec:authorize access="hasRole('ROLE_ADMIN')">
+		<div class="search-buttons"
+			style="text-align: right; margin-top: 10px;">
+
+			<button class="search-button search-button-blue"
+				onclick="loadInsertBoardPage()">글쓰기</button>
+		</div>
+	</sec:authorize>
 </div>
 
 <script>

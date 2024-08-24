@@ -4,10 +4,15 @@
 
 <mapper namespace="BoardDAO">
 
-	<insert id="insertBoard" parameterType="com.springbook.biz.VO.BoardVO">
-		INSERT INTO BOARD(SEQ, TITLE, WRITER, CONTENT)
-		VALUES((SELECT COALESCE(MAX(SEQ), 0) + 1 FROM BOARD), #{title}, #{writer}, #{content})
-	</insert>
+<insert id="insertBoard" parameterType="com.springbook.biz.VO.BoardVO">
+    INSERT INTO BOARD(SEQ, TITLE, WRITER, CONTENT)
+    VALUES(
+        (SELECT MAX_SEQ + 1 FROM (SELECT COALESCE(MAX(SEQ), 0) AS MAX_SEQ FROM BOARD) AS temp),
+        #{title},
+        #{writer},
+        #{content}
+    )
+</insert>
 	
 	<update id="updateBoard" parameterType="com.springbook.biz.VO.BoardVO">
 		UPDATE BOARD SET TITLE=#{title}, CONTENT=#{content} WHERE SEQ=#{seq}

@@ -1,33 +1,38 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
-<h1 class="search-title">글 상세</h1>
 <div class="search-section">
-    <div class="search-inputs">
-        <label class="search-title" style="width: 100px; display: inline-block;">제목</label>
-        <span style="margin-left: 10px;">${board.title}</span>
-    </div>
-    <div class="search-inputs">
-        <label class="search-title" style="width: 100px; display: inline-block;">작성자</label>
-        <span style="margin-left: 10px;">${board.writer}</span>
-    </div>
-    <div class="search-inputs">
-        <label class="search-title" style="width: 100px; display: inline-block;">내용</label>
-    </div>
-        <div class="search-inputs">
-        <div style="border: 1px solid #ccc; padding: 10px; margin-left: 10px; display: inline-block; width: calc(100% - 20px); overflow-wrap: break-word; word-wrap: break-word; word-break: break-all; max-height: 300px; overflow-y: auto;">
-            ${board.content}
-        </div>
-    </div>
-    <div class="search-inputs">
-        <label class="search-title" style="width: 100px; display: inline-block;">등록일</label>
-        <span style="margin-left: 10px;"><fmt:formatDate pattern='yyyy/MM/dd HH:mm:ss' value='${board.regDate}'/></span>
-    </div>
+	<div class="search-inputs">
+		<label class="search-title"
+			style="width: 80px; display: inline-block;">제목</label> <span
+			style="margin-left: 10px; margin-top: 5px;">${board.title}</span>
+	</div>
+	<div class="search-inputs">
+		<label class="search-title"
+			style="width: 80px; display: inline-block;">작성자</label> <span
+			style="margin-left: 10px; margin-top: 5px;">${board.writer}</span>
+	</div>
+	<div class="search-inputs">
+		<div
+			style="border: 1px solid #ccc; padding: 10px; margin-left: 10px; display: inline-block; width: calc(100% - 20px); overflow-wrap: break-word; word-wrap: break-word; word-break: break-all; max-height: 300px; overflow-y: auto;">
+			${board.content}</div>
+	</div>
+	<div class="search-inputs">
+		<label>등록시간</label> <span
+			style="margin-left: 10px;"><fmt:formatDate
+				pattern='yyyy/MM/dd HH:mm:ss' value='${board.regDate}' /></span>
+	</div>
 </div>
 <div class="search-buttons">
-    <a href="#" onclick="loadBoardList(); return false;" class="search-button search-button-blue">글목록</a>
-    <a href="#" onclick="deleteBoard(); return false;" class="search-button search-button-red">글 삭제</a>
+	<a href="#" onclick="loadBoardList(); return false;"
+		class="search-button search-button-blue">글목록</a> 
+	<sec:authorize access="hasRole('ROLE_ADMIN')">
+		<a href="#" onclick="deleteBoard(); return false;"
+		class="search-button search-button-red">글 삭제</a>
+	</sec:authorize>
 </div>
 
 <script>
