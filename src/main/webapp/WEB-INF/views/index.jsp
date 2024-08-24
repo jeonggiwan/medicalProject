@@ -164,6 +164,10 @@
         setupAjaxInterceptor();
         setupEventListeners();
         initializeCalendar();
+        $('#scheduleManagementLink').click(function(e) {
+            e.preventDefault();
+            loadScheduleManagement();
+        });
     });
 
     $('#patientTable').on('dblclick', '.patient-row', function() {
@@ -171,6 +175,20 @@
         var studyDate = $(this).find('td:eq(3)').text();
         window.location.href = '/viewer?studyKey=' + studyKey + '&studyDate=' + studyDate;
     });
+    
+    function loadScheduleManagement() {
+        $.ajax({
+            url: '/scheduleManagement',
+            type: 'GET',
+            success: function(response) {
+                $('#content').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('일정 관리 페이지 로딩 중 오류 발생:', error);
+                alert('일정 관리 페이지 로딩 중 오류가 발생했습니다.');
+            }
+        });
+    }
 
     function setupAjaxInterceptor() {
         $.ajaxSetup({
@@ -195,7 +213,6 @@
 
     function setupEventListeners() {
         $('#patientTable').on('click', '.patient-row', handlePatientRowClick);
-        $('#logoutButton').click(handleLogout);
         $('#saveButton').click(handleMemoSave);
         $('#memberManagementMenu').click(loadMemberManagement);
         $('#searchButton').click(searchPatients);
@@ -307,23 +324,6 @@
         });
     }
 
-    function handleLogout() {
-        $.ajax({
-            url: '/logout',
-            type: 'POST',
-            xhrFields: {
-                withCredentials: true
-            },
-            success: function (response) {
-                console.log('Logout successful');
-                window.location.href = '/login';
-            },
-            error: function (xhr, status, error) {
-                console.error('Logout failed:', error);
-                alert('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.');
-            }
-        });
-    }
 
     function getScheduleDates() {
         return new Promise((resolve, reject) => {

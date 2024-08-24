@@ -52,6 +52,7 @@ public class StudyController {
             SecurityContextHolder.getContext().setAuthentication(auth);
             
             model.addAttribute("username", auth.getName());
+            model.addAttribute("isIndexPage", true);  // 이 줄을 추가합니다.
             
             int pageSize = 6;
             List<StudyVO> allStudies = studyService.getStudyList();

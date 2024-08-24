@@ -1,22 +1,28 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <header class="header">
-	<div class="header-left">
-<a href="/" class="header-title">Mercy</a>
-		<a href="#" class="header-link" id="noticeLink">공지사항</a>
-	</div>
-	<div class="header-right">
-		<span id="accessTokenInfo">로그인 만료까지: <span
-			id="accessTokenExpiration"></span></span>
-		<button id="extendTokenButton" class="header-link">시간 연장</button>
-		<a href="#" class="header-link" id="mypageButton">마이페이지</a> <a
-			href="#" class="header-link" id="logoutButton">로그아웃</a>
-		<sec:authorize access="hasRole('ROLE_ADMIN')">
-			<a href="#" class="header-link" id="memberManagementMenu">회원관리</a>
-		</sec:authorize>
-	</div>
+    <div class="header-left">
+        <a href="/" class="header-title">Mercy</a>
+        <c:if test="${isIndexPage}">
+            <a href="#" class="header-link" id="noticeLink">공지사항</a>
+        </c:if>
+    </div>
+    <div class="header-right">
+        <span id="accessTokenInfo">로그인 만료까지: <span id="accessTokenExpiration"></span></span>
+        <button id="extendTokenButton" class="header-link">시간 연장</button>
+        <c:if test="${isIndexPage}">
+            <a href="#" class="header-link" id="mypageButton">마이페이지</a>
+        </c:if>
+        <a href="#" class="header-link" id="logoutButton">로그아웃</a>
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <c:if test="${isIndexPage}">
+                <a href="#" class="header-link" id="memberManagementMenu">회원관리</a>
+            </c:if>
+        </sec:authorize>
+    </div>
 </header>
 <script>
 	let countdownInterval;
@@ -65,6 +71,7 @@
 					function() {
 						updateAccessTokenInfo();
 
+				        $('#logoutButton').click(handleLogout);
 						$('#extendTokenButton')
 								.click(
 										function() {
@@ -95,4 +102,22 @@
 													});
 										});
 					});
+
+    function handleLogout() {
+        $.ajax({
+            url: '/logout',
+            type: 'POST',
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function (response) {
+                console.log('Logout successful');
+                window.location.href = '/login';
+            },
+            error: function (xhr, status, error) {
+                console.error('Logout failed:', error);
+                alert('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        });
+    }
 </script>
