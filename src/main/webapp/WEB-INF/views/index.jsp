@@ -156,12 +156,11 @@
 			</div>
 		</div>
 	</div>
-	<script>
+<script>
     let currentPage = 1;
     let totalPages = 1;
     
     $(document).ready(function () {
-        setupAjaxInterceptor();
         setupEventListeners();
         initializeCalendar();
         $('#scheduleManagementLink').click(function(e) {
@@ -186,27 +185,6 @@
             error: function(xhr, status, error) {
                 console.error('일정 관리 페이지 로딩 중 오류 발생:', error);
                 alert('일정 관리 페이지 로딩 중 오류가 발생했습니다.');
-            }
-        });
-    }
-
-    function setupAjaxInterceptor() {
-        $.ajaxSetup({
-            beforeSend: function (xhr) {
-                var token = localStorage.getItem('accessToken');
-                if (token) {
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-                }
-            }
-        });
-
-        $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
-            if (jqXHR.status === 401) {
-                refreshToken().then(function () {
-                    $.ajax(ajaxSettings);
-                }).catch(function () {
-                    window.location.href = '/login';
-                });
             }
         });
     }
@@ -259,9 +237,7 @@
             },
             error: function (xhr, status, error) {
                 console.error('Error fetching patient history:', error);
-                if (xhr.status !== 401) {
-                    $('#historyTable tbody').html('<tr><td colspan="7">Error loading history</td></tr>');
-                }
+                $('#historyTable tbody').html('<tr><td colspan="7">Error loading history</td></tr>');
             }
         });
     }
@@ -324,14 +300,12 @@
         });
     }
 
-
     function getScheduleDates() {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: 'getScheduleDates',
                 type: 'GET',
                 success: function(dates) {
-                    // 날짜를 하루 앞당깁니다.
                     const adjustedDates = dates.map(date => {
                         const d = new Date(date);
                         d.setDate(d.getDate() - 1);
@@ -346,7 +320,6 @@
             });
         });
     }
-
 
     function initializeCalendar() {
         const calendarEl = document.getElementById('calendar');
@@ -376,11 +349,9 @@
                 }
             });
 
-            // 초기화 후 오늘 날짜의 메모를 로드
             loadMemo(fp.formatDate(new Date(), "Y-m-d"));
         }).catch(error => {
             console.error('Failed to initialize calendar:', error);
-            // 에러 발생 시 기본 설정으로 캘린더를 초기화
             flatpickr(calendarEl, {
                 inline: true,
                 mode: "single",
@@ -396,7 +367,6 @@
             });
         });
     }
-
 
     function loadMemo(dateStr) {
         console.log("Loading memo for date:", dateStr);
@@ -481,26 +451,6 @@
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
-    }
-
-    function refreshToken() {
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                url: '/refreshToken',
-                type: 'POST',
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: function(response) {
-                    console.log('Token refreshed successfully');
-                    resolve();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Token refresh failed:', error);
-                    reject();
-                }
-            });
-        });
     }
 
     function loadMemberManagement() {
@@ -591,7 +541,6 @@
         });
     }
 
-    // CSS를 추가하여 원의 스타일을 지정합니다.
     $('<style>')
         .prop('type', 'text/css')
         .html(`

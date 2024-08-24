@@ -50,95 +50,13 @@
             <div id="imageContainer" class="image-container"></div>
         </div>
     </div>
-    
-    <script>
+   <script>
     let currentPage = 1;
     const itemsPerPage = 5;
 
     $(document).ready(function() {
-        setupAjaxInterceptor();
         _init();
-        updateViewerAccessTokenInfo();
     });
-
-    function setupAjaxInterceptor() {
-        $.ajaxSetup({
-            beforeSend: function (xhr) {
-                var token = localStorage.getItem('accessToken');
-                if (token) {
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-                }
-            }
-        });
-
-        $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
-            if (jqXHR.status === 401) {
-                refreshToken().then(function () {
-                    $.ajax(ajaxSettings);
-                }).catch(function () {
-                    window.location.href = '/login';
-                });
-            }
-        });
-    }
-
-    function refreshToken() {
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                url: '/refreshToken',
-                type: 'POST',
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: function(response) {
-                    console.log('Token refreshed successfully');
-                    resolve();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Token refresh failed:', error);
-                    reject();
-                }
-            });
-        });
-    }
-
-    function updateViewerAccessTokenInfo() {
-        $.ajax({
-            url: '/tokenInfo',
-            type: 'GET',
-            success: function(response) {
-                if (response.remainingTime > 0) {
-                    startViewerCountdown(response.remainingTime);
-                } else {
-                    $('#accessTokenExpiration').text('토큰 만료됨');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('토큰 정보 가져오기 실패:', error);
-                $('#accessTokenExpiration').text('정보 가져오기 실패');
-            }
-        });
-    }
-
-    function startViewerCountdown(remainingTime) {
-        clearInterval(window.viewerCountdownInterval);
-
-        function updateCountdown() {
-            if (remainingTime <= 0) {
-                $('#accessTokenExpiration').text('토큰 만료됨');
-                clearInterval(window.viewerCountdownInterval);
-                return;
-            }
-
-            const minutes = Math.floor(remainingTime / (60 * 1000));
-            const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
-            $('#accessTokenExpiration').text(minutes + '분 ' + seconds + '초');
-            remainingTime -= 1000;
-        }
-
-        updateCountdown();
-        window.viewerCountdownInterval = setInterval(updateCountdown, 1000);
-    }
 
     function _init(){
         cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
@@ -219,19 +137,32 @@
             imgElement.style.height = '150px';
             imgElement.style.border = '1px solid black';
             imgElement.style.marginBottom = '5px';
+            imgElement.style.cursor = 'pointer';  // 커서를 포인터로 변경하여 클릭 가능함을 나타냄
             container.appendChild(imgElement);
             
-            cornerstone.enable(imgElement); // Enable the cornerstone element
+            cornerstone.enable(imgElement);
             const image = await cornerstone.loadAndCacheImage(imageIds[i]);
-            cornerstone.displayImage(imgElement, image); // Display the image
+            cornerstone.displayImage(imgElement, image);
+
+            // 각 이미지에 클릭 이벤트 리스너 추가
+            imgElement.addEventListener('click', function() {
+                displayMainImage(imageIds[i]);
+            });
         }
         updatePaginationControls(page, imageIds.length);
     };
-
+    
+    // 메인 DICOM 뷰어에 선택된 이미지를 표시하는 함수
+    const displayMainImage = async (imageId) => {
+        const mainViewer = document.getElementById('dicom');
+        const image = await cornerstone.loadAndCacheImage(imageId);
+        cornerstone.displayImage(mainViewer, image);
+    };
     const updatePaginationControls = (page, totalItems) => {
         const totalPages = Math.ceil(totalItems / itemsPerPage);
         document.getElementById('prevPageBtn').disabled = page <= 1;
         document.getElementById('nextPageBtn').disabled = page >= totalPages;
+        document.getElementById('paginationText').textContent = page.toString();
     };
 
     const prevPage = async () => {
@@ -257,6 +188,7 @@
 
     let showThumbnails = false;
     
+
     document.getElementById('button2').addEventListener('click', async function() {
         showThumbnails = !showThumbnails;
     
@@ -266,12 +198,11 @@
             const imageContainer = document.getElementById('imageContainer');
             await displayMultipleImages(imageContainer, imageIds, currentPage, itemsPerPage);
         }
-    
         else {
             const imageContainerWrapper = document.getElementById('imageContainerWrapper');
             imageContainerWrapper.style.visibility = 'hidden';
         }
     });
-    </script>
+</script>
 </body>
 </html>
