@@ -1,12 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
 <div class="content">
     <div class="search-section">
-        <h2 class="search-title">글 등록</h2>
         <form action="insertBoard" method="post" name="board" id="insertBoardForm">
             <div class="search-inputs">
                 <label for="title" class="search-title" style="width: 100px;">제목</label>
@@ -20,7 +17,6 @@
                 <label for="content2" class="search-title" style="width: 100px;">내용</label>
                 <textarea id="content2" name="content2" rows="6" class="search-input" style="flex: 1;"></textarea>
             </div>
-
             <div class="search-buttons">
                 <button type="submit" class="search-button search-button-blue">새글 등록</button>
                 <a href="#" onclick="loadBoardList()" class="search-button">글 목록 가기</a>
@@ -28,20 +24,26 @@
         </form>
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
     $('#insertBoardForm').submit(function(e) {
         e.preventDefault();
+        var title = $('#title').val().trim();
+        var writer = $('#writer').val().trim();
+        var content = $('#content2').val().trim();
+
+        if (title === '' || writer === '' || content === '') {
+            alert('제목, 작성자, 내용을 모두 입력해주세요.');
+            return;
+        }
+
         var formData = {
-            title: $('#title').val(),
-            writer: $('#writer').val(),
-            content: $('#content2') .val()
+            title: title,
+            writer: writer,
+            content: content
         };
-
         console.log(formData); // 폼 데이터 확인용 로그
-
         $.ajax({
             type: 'POST',
             url: 'insertBoard',
@@ -62,7 +64,6 @@ $(document).ready(function() {
         });
     });
 });
-
 function loadBoardList() {
     fetch('getBoardList')
     .then(response => response.text())

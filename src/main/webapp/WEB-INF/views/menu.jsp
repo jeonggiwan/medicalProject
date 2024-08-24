@@ -4,8 +4,8 @@
 	uri="http://www.springframework.org/security/tags"%>
 <header class="header">
 	<div class="header-left">
-		<h1 class="header-title">Mercy</h1>
-		<a href="/getBoardList" class="header-link">공지사항</a>
+<a href="/" class="header-title">Mercy</a>
+		<a href="#" class="header-link" id="noticeLink">공지사항</a>
 	</div>
 	<div class="header-right">
 		<span id="accessTokenInfo">로그인 만료까지: <span

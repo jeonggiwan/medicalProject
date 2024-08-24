@@ -200,7 +200,10 @@
         $('#memberManagementMenu').click(loadMemberManagement);
         $('#searchButton').click(searchPatients);
         $('#mypageButton').click(loadMyPage);
-        $('#noticeLink').click(loadBoardList);
+        $('#noticeLink').click(function(e) {
+            e.preventDefault();
+            loadBoardList();
+        });
     }
 
     function loadMyPage() {
