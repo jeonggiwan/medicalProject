@@ -7,9 +7,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DICOM Viewer</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../CSS/viewer.css"> <!-- CSS 파일 링크 추가 -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../CSS/viewer.css">
     <script src="https://unpkg.com/hammerjs@2.0.8/hammer.js"></script>
     <script src="https://unpkg.com/dicom-parser/dist/dicomParser.js"></script>
     <script src="https://unpkg.com/cornerstone-core"></script>
@@ -17,10 +17,11 @@
     <script src="https://unpkg.com/cornerstone-wado-image-loader"></script>
     <script src="https://unpkg.com/cornerstone-tools"></script>
     <link rel="stylesheet" href="../CSS/dicom.css">
-    <link rel="stylesheet" href="../CSS/viewer.css">
+    <link rel="stylesheet" href="../CSS/menu.css">
 </head>
 <body>
-	<div class="container">
+    <%@ include file="menu.jsp" %>
+    <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
             <button id="button1" class="sidebar-button">Button 1</button>
@@ -53,7 +54,92 @@
     <script>
     let currentPage = 1;
     const itemsPerPage = 5;
-    
+
+    $(document).ready(function() {
+        setupAjaxInterceptor();
+        _init();
+        updateViewerAccessTokenInfo();
+    });
+
+    function setupAjaxInterceptor() {
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                var token = localStorage.getItem('accessToken');
+                if (token) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                }
+            }
+        });
+
+        $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
+            if (jqXHR.status === 401) {
+                refreshToken().then(function () {
+                    $.ajax(ajaxSettings);
+                }).catch(function () {
+                    window.location.href = '/login';
+                });
+            }
+        });
+    }
+
+    function refreshToken() {
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                url: '/refreshToken',
+                type: 'POST',
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function(response) {
+                    console.log('Token refreshed successfully');
+                    resolve();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Token refresh failed:', error);
+                    reject();
+                }
+            });
+        });
+    }
+
+    function updateViewerAccessTokenInfo() {
+        $.ajax({
+            url: '/tokenInfo',
+            type: 'GET',
+            success: function(response) {
+                if (response.remainingTime > 0) {
+                    startViewerCountdown(response.remainingTime);
+                } else {
+                    $('#accessTokenExpiration').text('토큰 만료됨');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('토큰 정보 가져오기 실패:', error);
+                $('#accessTokenExpiration').text('정보 가져오기 실패');
+            }
+        });
+    }
+
+    function startViewerCountdown(remainingTime) {
+        clearInterval(window.viewerCountdownInterval);
+
+        function updateCountdown() {
+            if (remainingTime <= 0) {
+                $('#accessTokenExpiration').text('토큰 만료됨');
+                clearInterval(window.viewerCountdownInterval);
+                return;
+            }
+
+            const minutes = Math.floor(remainingTime / (60 * 1000));
+            const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
+            $('#accessTokenExpiration').text(minutes + '분 ' + seconds + '초');
+            remainingTime -= 1000;
+        }
+
+        updateCountdown();
+        window.viewerCountdownInterval = setInterval(updateCountdown, 1000);
+    }
+
     function _init(){
         cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
         cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
@@ -81,6 +167,9 @@
         cornerstoneTools.toolColors.setToolColor("rgb(255, 255, 0)")
         cornerstoneTools.toolColors.setActiveColor("rgb(0, 255, 0)")
         cornerstoneTools.store.state.touchProximity = 40
+
+        const dicom = document.querySelector("#dicom");
+        display(dicom, imageIds);
     }
 
     const dicomFiles = [];
@@ -162,36 +251,26 @@
         }
     };
 
- // Initialize and display the first page of images
-    (async function () {
-        _init(); // Initialize cornerstone and cornerstoneTools
-        const dicom = document.querySelector("#dicom");
-        await display(dicom, imageIds); // Ensure main DICOM image is displayed
-    })();
+    document.getElementById('button1').addEventListener('click', function() {
+        window.location.href = "/";
+    });
 
- 	document.getElementById('button1').addEventListener('click', function() {
- 		window.location.href = "/";
- 	});
- 	
-    // Show imageContainer when Button 2 is clicked
     let showThumbnails = false;
     
     document.getElementById('button2').addEventListener('click', async function() {
-    	showThumbnails = !showThumbnails;
-    	
-    	if(showThumbnails){
-    		const imageContainerWrapper = document.getElementById('imageContainerWrapper');
+        showThumbnails = !showThumbnails;
+    
+        if(showThumbnails){
+            const imageContainerWrapper = document.getElementById('imageContainerWrapper');
             imageContainerWrapper.style.visibility = 'visible';
             const imageContainer = document.getElementById('imageContainer');
             await displayMultipleImages(imageContainer, imageIds, currentPage, itemsPerPage);
-    	}
-    	
-    	else {
-    		const imageContainerWrapper = document.getElementById('imageContainerWrapper');
+        }
+    
+        else {
+            const imageContainerWrapper = document.getElementById('imageContainerWrapper');
             imageContainerWrapper.style.visibility = 'hidden';
-    	}
-    		
-        
+        }
     });
     </script>
 </body>
