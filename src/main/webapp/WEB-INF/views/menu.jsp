@@ -25,130 +25,137 @@
     </div>
 </header>
 <script>
-    let countdownInterval;
+let countdownInterval;
 
-    $(document).ready(function() {
-        setupAjaxInterceptor();
-        updateAccessTokenInfo();
-        $('#logoutButton').click(handleLogout);
-        $('#extendTokenButton').click(extendToken);
+$(document).ready(function() {
+    setupAjaxInterceptor();
+    updateAccessTokenInfo();
+    $('#logoutButton').click(handleLogout);
+    $('#extendTokenButton').click(extendToken);
+});
+
+function setupAjaxInterceptor() {
+    $.ajaxSetup({
+        beforeSend: function (xhr) {
+            var token = localStorage.getItem('accessToken');
+            if (token) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            }
+        }
     });
 
-    function setupAjaxInterceptor() {
-        $.ajaxSetup({
-            beforeSend: function (xhr) {
-                var token = localStorage.getItem('accessToken');
-                if (token) {
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-                }
-            }
-        });
+    $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
+        if (jqXHR.status === 401) {
+            refreshToken().then(function () {
+                $.ajax(ajaxSettings);
+            }).catch(function () {
+                redirectToLogin();
+            });
+        }
+    });
+}
 
-        $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
-            if (jqXHR.status === 401) {
-                refreshToken().then(function () {
-                    $.ajax(ajaxSettings);
-                }).catch(function () {
-                    window.location.href = '/login';
-                });
-            }
-        });
-    }
-
-    function updateAccessTokenInfo() {
-        $.ajax({
-            url: '/tokenInfo',
-            type: 'GET',
-            success: function(response) {
-                if (response.remainingTime > 0) {
-                    startCountdown(response.remainingTime);
-                } else {
-                    $('#accessTokenExpiration').text('토큰 만료됨');
-                    clearInterval(countdownInterval);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('토큰 정보 가져오기 실패:', error);
-                $('#accessTokenExpiration').text('정보 가져오기 실패');
-            }
-        });
-    }
-
-    function startCountdown(remainingTime) {
-        clearInterval(countdownInterval);
-
-        function updateCountdown() {
-            if (remainingTime <= 0) {
+function updateAccessTokenInfo() {
+    $.ajax({
+        url: '/tokenInfo',
+        type: 'GET',
+        success: function(response) {
+            if (response.remainingTime > 0) {
+                startCountdown(response.remainingTime);
+            } else {
                 $('#accessTokenExpiration').text('토큰 만료됨');
                 clearInterval(countdownInterval);
-                return;
+                redirectToLogin();
             }
+        },
+        error: function(xhr, status, error) {
+            console.error('토큰 정보 가져오기 실패:', error);
+            $('#accessTokenExpiration').text('정보 가져오기 실패');
+        }
+    });
+}
 
-            const minutes = Math.floor(remainingTime / (60 * 1000));
-            const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
-            $('#accessTokenExpiration').text(minutes + '분 ' + seconds + '초');
-            remainingTime -= 1000;
+function startCountdown(remainingTime) {
+    clearInterval(countdownInterval);
+
+    function updateCountdown() {
+        if (remainingTime <= 0) {
+            $('#accessTokenExpiration').text('토큰 만료됨');
+            clearInterval(countdownInterval);
+            redirectToLogin();
+            return;
         }
 
-        updateCountdown();
-        countdownInterval = setInterval(updateCountdown, 1000);
+        const minutes = Math.floor(remainingTime / (60 * 1000));
+        const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
+        $('#accessTokenExpiration').text(minutes + '분 ' + seconds + '초');
+        remainingTime -= 1000;
     }
 
-    function extendToken() {
+    updateCountdown();
+    countdownInterval = setInterval(updateCountdown, 1000);
+}
+
+function redirectToLogin() {
+    window.location.href = '/login';
+}
+
+function extendToken() {
+    $.ajax({
+        url: '/refreshToken',
+        type: 'POST',
+        success: function(response) {
+            updateAccessTokenInfo();
+            alert('시간이 연장되었습니다.');
+        },
+        error: function(xhr, status, error) {
+            console.error('토큰 연장 실패:', xhr.responseText, status, error);
+            if (xhr.status === 401) {
+                alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+                redirectToLogin();
+            } else {
+                alert('시간 연장에 실패했습니다. 페이지를 새로고침하거나 다시 로그인해주세요.');
+            }
+        }
+    });
+}
+
+function refreshToken() {
+    return new Promise(function(resolve, reject) {
         $.ajax({
             url: '/refreshToken',
-            type: 'POST',
-            success: function(response) {
-                updateAccessTokenInfo();
-                alert('시간이 연장되었습니다.');
-            },
-            error: function(xhr, status, error) {
-                console.error('토큰 연장 실패:', xhr.responseText, status, error);
-                if (xhr.status === 401) {
-                    alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-                    window.location.href = '/login';
-                } else {
-                    alert('시간 연장에 실패했습니다. 페이지를 새로고침하거나 다시 로그인해주세요.');
-                }
-            }
-        });
-    }
-
-    function refreshToken() {
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                url: '/refreshToken',
-                type: 'POST',
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: function(response) {
-                    console.log('Token refreshed successfully');
-                    resolve();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Token refresh failed:', error);
-                    reject();
-                }
-            });
-        });
-    }
-
-    function handleLogout() {
-        $.ajax({
-            url: '/logout',
             type: 'POST',
             xhrFields: {
                 withCredentials: true
             },
-            success: function (response) {
-                console.log('Logout successful');
-                window.location.href = '/login';
+            success: function(response) {
+                console.log('Token refreshed successfully');
+                resolve();
             },
-            error: function (xhr, status, error) {
-                console.error('Logout failed:', error);
-                alert('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.');
+            error: function(xhr, status, error) {
+                console.error('Token refresh failed:', error);
+                reject();
             }
         });
-    }
+    });
+}
+
+function handleLogout() {
+    $.ajax({
+        url: '/logout',
+        type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function (response) {
+            console.log('Logout successful');
+            redirectToLogin();
+        },
+        error: function (xhr, status, error) {
+            console.error('Logout failed:', error);
+            alert('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+    });
+}
+
 </script>

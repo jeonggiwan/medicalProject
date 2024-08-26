@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StudyDAO">
+
+	<select id="getStudyList" resultType="study">
+		SELECT * FROM dicom
+	</select>
+	
+	<select id="getPatientHistory" resultType="study"
+		parameterType="string">
+		SELECT * FROM dicom WHERE PID = #{pid} ORDER BY
+		STUDYDATE DESC,
+		STUDYTIME DESC
+	</select>
+
+	<select id="getStudyDetails" resultType="study"
+		parameterType="study">
+		SELECT * FROM dicom
+		WHERE STUDYKEY = #{studyKey}
+		AND STUDYDATE =
+		#{studyDate}
+	</select>
+
+	<select id="searchPatientsByPid" resultType="study"
+		parameterType="string">
+		SELECT * FROM dicom WHERE PID LIKE CONCAT('%', #{pid}, '%')
+	</select>
+
+	<select id="searchPatientsByName" resultType="study"
+		parameterType="string">
+		SELECT * FROM dicom WHERE PNAME LIKE CONCAT('%', #{name}, '%')
+	</select>
+    <select id="getStudyReport" resultType="study" parameterType="map">
+        SELECT * FROM dicom
+        WHERE PID = #{pid} AND STUDYDATE = #{studyDate}
+    </select>
+
+    <update id="updateReport" parameterType="map">
+        UPDATE dicom
+        SET REPORT = #{report}
+        WHERE STUDYKEY = #{studyKey} AND STUDYDATE = #{studyDate}
+    </update>
+</mapper>
+

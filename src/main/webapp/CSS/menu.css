@@ -1,15 +1,6 @@
 body {
     font-family: 'Noto Sans KR', sans-serif;
-}
-
-.container {
-    max-width: 56rem;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    color: #000000;  /* 전체 텍스트 색상을 검은색으로 설정 */
 }
 
 .header {
