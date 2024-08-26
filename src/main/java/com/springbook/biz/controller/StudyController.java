@@ -52,7 +52,7 @@ public class StudyController {
             SecurityContextHolder.getContext().setAuthentication(auth);
             
             model.addAttribute("username", auth.getName());
-            model.addAttribute("isIndexPage", true);  // 이 줄을 추가합니다.
+            model.addAttribute("isIndexPage", true); 
             
             int pageSize = 6;
             List<StudyVO> allStudies = studyService.getStudyList();
@@ -109,5 +109,39 @@ public class StudyController {
 
         System.out.println(result);
         return result;
+    }
+    
+    @GetMapping("/getPatientReport")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> getPatientReport(@RequestParam String studyKey, @RequestParam String studyDate) {
+        StudyVO study = studyService.getStudyDetails(studyKey, studyDate);
+        System.out.println(study);
+        System.out.println(studyKey);
+        System.out.println(studyDate);
+        if (study != null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("pname", study.getpName());
+            response.put("pid", study.getPid());
+            response.put("doctor", study.getDoctor());
+            response.put("report", study.getReport());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/updateReport")
+    @ResponseBody
+    public ResponseEntity<Map<String, Boolean>> updateReport(@RequestBody Map<String, String> payload) {
+        String studyKey = payload.get("studyKey");
+        String studyDate = payload.get("studyDate");
+        String report = payload.get("report");
+
+        boolean success = studyService.updateReport(studyKey, studyDate, report);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("success", success);
+
+        return ResponseEntity.ok(response);
     }
 }

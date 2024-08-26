@@ -32,7 +32,9 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-                .antMatchers("/login", "/logout","/checkDuplication", "/CSS/**", "/js/**", "/images/**", "/sign","/sendVerification","/verifyCode","/forgot-id","/forgot-pw","/find-id","/reset-password").permitAll()
+                .antMatchers("/login", "/logout","/checkDuplication", "/CSS/**", "/js/**", "/images/**", "/sign","/sendVerification","/verifyCode",
+                		"/forgot-id","/forgot-pw","/find-id","/reset-password").permitAll()
+                
                 .anyRequest().authenticated()
             .and()
             .exceptionHandling()

@@ -114,8 +114,6 @@ public class MemberController {
     @ResponseBody
     public ResponseEntity<String> deleteAccount(Principal principal, HttpServletResponse response) {
         String userId = principal.getName();
-        System.out.println(userId);
-        System.out.println(response);
         return memberService.deleteAccount(userId, response);
     }
     

@@ -11,4 +11,7 @@ public interface StudyService {
     
 	List<StudyVO> searchPatientsByPid(String pid);
 	List<StudyVO> searchPatientsByName(String name);
+    boolean updateReport(String studyKey, String studyDate, String report);
+
+    
 }

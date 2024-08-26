@@ -37,4 +37,10 @@ public class StudyServiceImpl implements StudyService {
     public List<StudyVO> searchPatientsByName(String name) {
         return studyDAO.searchPatientsByName(name);
     }
+
+
+    @Override
+    public boolean updateReport(String studyKey, String studyDate, String report) {
+        return studyDAO.updateReport(studyKey, studyDate, report);
+    }
 }

@@ -1,6 +1,8 @@
 package com.springbook.biz.study;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +37,15 @@ public class StudyDAOMybatis {
 
     public List<StudyVO> searchPatientsByName(String name) {
         return mybatis.selectList("StudyDAO.searchPatientsByName", name);
+    }
+    
+
+    public boolean updateReport(String studyKey, String studyDate, String report) {
+        Map<String, String> params = new HashMap<>();
+        params.put("studyKey", studyKey);
+        params.put("studyDate", studyDate);
+        params.put("report", report);
+        int result = mybatis.update("StudyDAO.updateReport", params);
+        return result > 0;
     }
 }

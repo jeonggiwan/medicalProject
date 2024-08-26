@@ -20,7 +20,26 @@ public class StudyVO {
     private int delFlag;
     private String seriesInsUid;
     private int seriesNum;
-    public String getStudyKey() {
+    private String doctor;
+    private String report;
+    
+    public String getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(String doctor) {
+		this.doctor = doctor;
+	}
+
+	public String getReport() {
+		return report;
+	}
+
+	public void setReport(String report) {
+		this.report = report;
+	}
+
+	public String getStudyKey() {
 		return studyKey;
 	}
 

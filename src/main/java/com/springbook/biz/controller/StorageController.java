@@ -64,6 +64,7 @@ public class StorageController {
             // DICOM 파일 목록 가져오기
             List<String> dicomFileNames = dicomFileService.getDicomFiles(filePath);
             model.addAttribute("dicomFileNames", dicomFileNames);
+            System.out.println(dicomFileNames);
         } else {
             model.addAttribute("message", "해당 검사 데이터를 찾을 수 없습니다.");
         }

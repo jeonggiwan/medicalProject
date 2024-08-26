@@ -31,5 +31,15 @@
 		parameterType="string">
 		SELECT * FROM dicom WHERE PNAME LIKE CONCAT('%', #{name}, '%')
 	</select>
+    <select id="getStudyReport" resultType="study" parameterType="map">
+        SELECT * FROM dicom
+        WHERE PID = #{pid} AND STUDYDATE = #{studyDate}
+    </select>
+
+    <update id="updateReport" parameterType="map">
+        UPDATE dicom
+        SET REPORT = #{report}
+        WHERE STUDYKEY = #{studyKey} AND STUDYDATE = #{studyDate}
+    </update>
 </mapper>
 

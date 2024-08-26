@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,15 +22,20 @@ public class DicomFileService {
             }
         }
         
-        // 파일 이름의 마지막 숫자를 기준으로 정렬
-        Collections.sort(dicomFiles, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                Integer n1 = extractLastNumber(o1);
-                Integer n2 = extractLastNumber(o2);
-                return n1.compareTo(n2);
-            }
-        });
+        try {
+            // 파일 이름의 마지막 숫자를 기준으로 정렬
+            Collections.sort(dicomFiles, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    Integer n1 = extractLastNumber(o1);
+                    Integer n2 = extractLastNumber(o2);
+                    return n1.compareTo(n2);
+                }
+            });
+        } catch (Exception e) {
+            System.out.println("파일 정렬 중 예외 발생: " + e.getMessage());
+            System.out.println("원래 순서의 파일 목록을 반환합니다.");
+        }
         
         System.out.println(dicomFiles);
         return dicomFiles;
