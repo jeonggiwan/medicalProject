@@ -42,11 +42,15 @@
             <button id="probeCanvas" class="tool-button"><img alt="none" src="images/post-it.png"></button>
             <button id="preprocess" class="tool-button"><img alt="none" src="images/python.png"></button>
             <button id="edgeDetection" class="tool-button"><img alt="none" src="images/corner.png"></button>
+            <button id="downloadImage" class="tool-button" style="display:none"><img alt="none" src="images/downloads.png"></button>
          </div>
 
+      <div id="dicomImages">
          <div id="dicom" class="cornerstone-element"
             oncontextmenu="return false"
             style="width: 512px; height: 512px; border: 1px solid black;"></div>
+      </div>
+         
       </div>
       <!-- Image Container with Pagination -->
       <div class="image-container-wrapper" id="imageContainerWrapper">
@@ -465,7 +469,7 @@
     });
 
     let preprocess = false;
- // preprocess와 edgeDetection 버튼에 대한 이벤트 리스너 수정
+    // preprocess와 edgeDetection 버튼에 대한 이벤트 리스너 수정
     document.getElementById('preprocess').addEventListener('click', function() {
         this.classList.toggle('active');
         toggleProcessedImage('preprocess');
@@ -476,9 +480,10 @@
         this.classList.toggle('active');
         toggleProcessedImage('edgeDetection');
     });
+    
     function toggleProcessedImage(action) {
         let processedImageDiv = document.getElementById('processedImage');
-        const dicomDiv = document.querySelector('.main-content');
+        const dicomDiv = document.querySelector('#dicomImages');
 
         if (!processedImageDiv) {
             processedImageDiv = document.createElement('div');
@@ -496,11 +501,14 @@
         } else {
             // If hidden, display and adjust sizes
             processedImageDiv.style.display = 'block';
-            dicomDiv.style.width = '40%';
+            dicomDiv.style.width = '100%';
 
             // Load the processed image into the processedImage div
             fetchProcessedImage(action, processedImageDiv);
         }
+        
+        // Update the download button visibility
+        updateDownloadButtonVisibility();
     }
 
     function fetchProcessedImage(action, processedImageDiv) {
@@ -546,6 +554,11 @@
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
                 processedImageDiv.appendChild(canvas);
+                
+                // Show download button
+                const downloadButton = document.getElementById('downloadImage');
+                downloadButton.style.display = 'block';
+                downloadButton.onclick = () => downloadImage(canvas);
             }
         })
         .catch((error) => {
@@ -596,7 +609,25 @@
             }
         });
     });
-
+    
+    // 이미지 다운로드
+    function downloadImage(canvas) {
+       const link = document.createElement('a');
+       link.href = canvas.toDataURL('image/png');
+       link.download = '${study.modality}' + '-' + '${study.studyDate}' + '-' + '${study.pid}' + '.png';
+       link.click();
+   }
+    
+    // Function to update the visibility of the download button
+    function updateDownloadButtonVisibility() {
+        const downloadButton = document.getElementById('downloadImage');
+        if (preprocess || edgeDetection) {
+            downloadButton.style.display = 'block';
+        } else {
+            downloadButton.style.display = 'none';
+        }
+    }
+    
     </script>
 </body>
 </html>
